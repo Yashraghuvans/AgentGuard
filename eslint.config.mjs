@@ -2,7 +2,7 @@ import js from '@eslint/js';
 
 export default [
   {
-    ignores: ['node_modules/', 'tools/', 'test-results/', '.sf/', 'force-app/main/default/lwc/**/jest.config.js'],
+    ignores: ['node_modules/', 'tools/', 'test-results/', '.sf/', 'force-app/main/default/lwc/**/jest.config.js']
   },
   js.configs.recommended,
   {
@@ -14,11 +14,13 @@ export default [
         console: 'readonly',
         Buffer: 'readonly',
         __dirname: 'readonly',
-      },
+        require: 'readonly',
+        module: 'readonly'
+      }
     },
     rules: {
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      eqeqeq: 'error',
-    },
-  },
+      eqeqeq: 'error'
+    }
+  }
 ];

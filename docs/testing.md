@@ -19,15 +19,15 @@
 Every threat row in [threat-model.md](threat-model.md) must map to a currently
 passing test. An entry here with no green check in CI is a documentation lie.
 
-| Threat / Requirement | Test type | Test class |
-| --- | --- | --- |
-| Prompt-injected bulk mutation via single-record contract | Flow | TerritoryReassignFlowTest |
-| User lacks field-level access to mutated field | Unit | AccessGateTest |
-| Agent exceeds rate limit in rolling window | Flow | TerritoryReassignFlowTest |
-| Malformed payload missing required schema field | Unit | SchemaValidatorTest |
-| Partial failure mid-bulk triggers full rollback | Unit + Flow | RollbackGuardTest + chain scenario |
-| Every BLOCK produces exactly one audit event | Flow | TerritoryReassignFlowTest + AuditPublisherTest |
-| Bulk 200-record payload processes without governor errors | Unit | AccessGateTest, RateLimiterTest |
+| Threat / Requirement                                      | Test type   | Test class                                     |
+| --------------------------------------------------------- | ----------- | ---------------------------------------------- |
+| Prompt-injected bulk mutation via single-record contract  | Flow        | TerritoryReassignFlowTest                      |
+| User lacks field-level access to mutated field            | Unit        | AccessGateTest                                 |
+| Agent exceeds rate limit in rolling window                | Flow        | TerritoryReassignFlowTest                      |
+| Malformed payload missing required schema field           | Unit        | SchemaValidatorTest                            |
+| Partial failure mid-bulk triggers full rollback           | Unit + Flow | RollbackGuardTest + chain scenario             |
+| Every BLOCK produces exactly one audit event              | Flow        | TerritoryReassignFlowTest + AuditPublisherTest |
+| Bulk 200-record payload processes without governor errors | Unit        | AccessGateTest, RateLimiterTest                |
 
 ## Standards
 

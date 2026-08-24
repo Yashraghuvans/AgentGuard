@@ -2,8 +2,12 @@
 # Husky pre-commit: enforce formatting + block obvious secrets (RULES.md #9)
 npx lint-staged
 
-# Lightweight secret scan on staged files
-if git diff --cached --diff-filter=ACMR --name-only -z | xargs -0 grep -lEi '(server\.key|BEGIN (RSA )?PRIVATE KEY|sf org login jwt|password\s*=\s*[^\s]{8,})' 2>/dev/null; then
+# Lightweight secret scan on staged files.
+# Detects credential MATERIAL, not tooling that references secrets
+# (e.g. "sf org login jwt" or "${{ secrets.X }}" placeholders are fine).
+if git diff --cached --diff-filter=ACMR --name-only -z | xargs -0 grep -lEi \
+    -e '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|(password|passwd|api[_-]?key|client[_-]?secret)[[:space:]]*[=:][[:space:]]*["'\'']?[A-Za-z0-9+/_-]{16,}' \
+    2>/dev/null; then
   echo ""
   echo "ERROR: potential secret detected in staged files."
   echo "Remove credentials before committing. See SECURITY.md and RULES.md #9."

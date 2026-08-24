@@ -32,16 +32,16 @@ Salesforce platform behavior — verify against official docs or existing test c
 
 ## Repo Map (where things live)
 
-| Path | Purpose |
-| --- | --- |
-| `force-app/main/default/classes/core/` | Gate classes: AgentGuard facade + SchemaValidator, AccessGate, RateLimiter, RollbackGuard, AuditPublisher |
-| `force-app/main/default/classes/models/` | Value types: GuardResult, GuardPolicy |
-| `force-app/main/default/classes/tests/` | Apex unit tests |
-| `force-app/main/default/objects/Guard_Policy__mdt/` | Declarative policy configuration |
-| `force-app/main/default/platformEvents/AgentGuard_Audit__e/` | Audit event definition |
-| `examples/` | Copy-paste integration projects |
-| `docs/` | Hosted documentation (GitHub Pages) |
-| `scripts/ci/` | CI helpers (coverage gate, PMD runner, flow scenarios) |
+| Path                                                         | Purpose                                                                                                   |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `force-app/main/default/classes/core/`                       | Gate classes: AgentGuard facade + SchemaValidator, AccessGate, RateLimiter, RollbackGuard, AuditPublisher |
+| `force-app/main/default/classes/models/`                     | Value types: GuardResult, GuardPolicy                                                                     |
+| `force-app/main/default/classes/tests/`                      | Apex unit tests                                                                                           |
+| `force-app/main/default/objects/Guard_Policy__mdt/`          | Declarative policy configuration                                                                          |
+| `force-app/main/default/platformEvents/AgentGuard_Audit__e/` | Audit event definition                                                                                    |
+| `examples/`                                                  | Copy-paste integration projects                                                                           |
+| `docs/`                                                      | Hosted documentation (GitHub Pages)                                                                       |
+| `scripts/ci/`                                                | CI helpers (coverage gate, PMD runner, flow scenarios)                                                    |
 
 ## Request Lifecycle You Are Working Inside
 

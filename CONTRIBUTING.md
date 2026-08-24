@@ -6,11 +6,11 @@ change must respect (human and AI contributors alike).
 
 ## Prerequisites
 
-| Tool | Version | Notes |
-| --- | --- | --- |
-| Salesforce CLI (`sf`) | v2.x | `npm install -g @salesforce/cli` |
-| Node.js | 20+ | see `.nvmrc` |
-| Java | 17+ | required by Prettier-Apex plugin and PMD |
+| Tool                  | Version | Notes                                    |
+| --------------------- | ------- | ---------------------------------------- |
+| Salesforce CLI (`sf`) | v2.x    | `npm install -g @salesforce/cli`         |
+| Node.js               | 20+     | see `.nvmrc`                             |
+| Java                  | 17+     | required by Prettier-Apex plugin and PMD |
 
 ## Local Setup
 
@@ -36,13 +36,13 @@ CI enforces all of the above against a fresh scratch org. Local failures will fa
 
 ## Branch Strategy
 
-| Branch | Purpose |
-| --- | --- |
-| `main` | Protected, deploy-ready at all times |
-| `develop` | Integration branch for the next release |
-| `feat/<name>` | New capability |
-| `fix/<name>` | Bug fix |
-| `sec/<name>` | Security-relevant change — requires second review (see GOVERNANCE.md) |
+| Branch        | Purpose                                                               |
+| ------------- | --------------------------------------------------------------------- |
+| `main`        | Protected, deploy-ready at all times                                  |
+| `develop`     | Integration branch for the next release                               |
+| `feat/<name>` | New capability                                                        |
+| `fix/<name>`  | Bug fix                                                               |
+| `sec/<name>`  | Security-relevant change — requires second review (see GOVERNANCE.md) |
 
 ## Commit Conventions
 

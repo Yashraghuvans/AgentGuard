@@ -25,14 +25,14 @@ AuditPublisher -> AgentGuard_Audit__e Platform Event
 
 ## Components
 
-| Component | Responsibility |
-| --- | --- |
-| `AgentGuard.cls` | Public `wrap()` facade; catches gate exceptions as BLOCK (ADR-002) |
-| `SchemaValidator.cls` | Validates payload against declared action contract |
-| `AccessGate.cls` | CRUD/FLS enforcement in running-user context; `stripInaccessible` on read paths |
-| `RateLimiter.cls` | Sliding-window per-agent/per-action throttle (v0.3) |
-| `RollbackGuard.cls` | Savepoint boundary + max-records-affected ceiling (v0.3) |
-| `AuditPublisher.cls` | Platform Event per ALLOW/BLOCK/THROTTLE decision |
+| Component             | Responsibility                                                                  |
+| --------------------- | ------------------------------------------------------------------------------- |
+| `AgentGuard.cls`      | Public `wrap()` facade; catches gate exceptions as BLOCK (ADR-002)              |
+| `SchemaValidator.cls` | Validates payload against declared action contract                              |
+| `AccessGate.cls`      | CRUD/FLS enforcement in running-user context; `stripInaccessible` on read paths |
+| `RateLimiter.cls`     | Sliding-window per-agent/per-action throttle (v0.3)                             |
+| `RollbackGuard.cls`   | Savepoint boundary + max-records-affected ceiling (v0.3)                        |
+| `AuditPublisher.cls`  | Platform Event per ALLOW/BLOCK/THROTTLE decision                                |
 
 ## Key Decisions (ADRs)
 

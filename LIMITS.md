@@ -7,7 +7,7 @@ require an ADR (see `CHANGELOG.md` / `docs/`).
 ## Not Attempted (v1)
 
 - **Not a replacement for Salesforce's Einstein Trust Layer.**
-  AgentGuard does not mask data sent to an external LLM. It governs actions *after*
+  AgentGuard does not mask data sent to an external LLM. It governs actions _after_
   the LLM decides to call a tool. Pair them: Trust Layer at the prompt boundary,
   AgentGuard at the action boundary.
 

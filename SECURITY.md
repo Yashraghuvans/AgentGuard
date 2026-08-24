@@ -6,8 +6,8 @@ responsibly.
 
 ## Supported Versions
 
-| Version | Supported |
-| --- | --- |
+| Version | Supported                                            |
+| ------- | ---------------------------------------------------- |
 | < 1.0.0 | Pre-release development — report against `main` only |
 
 ## How to Report a Vulnerability
@@ -29,11 +29,11 @@ Include, where possible:
 
 ## Response Targets
 
-| Stage | Target |
-| --- | --- |
-| Acknowledgement | 72 hours |
-| Triage & severity assignment | 7 days |
-| Fix or mitigation for High/Critical | 30 days |
+| Stage                               | Target   |
+| ----------------------------------- | -------- |
+| Acknowledgement                     | 72 hours |
+| Triage & severity assignment        | 7 days   |
+| Fix or mitigation for High/Critical | 30 days  |
 
 If you receive no response within these targets, escalate by opening an issue that
 says only "please check Security Advisories inbox" — never include details publicly.

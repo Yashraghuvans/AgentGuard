@@ -4,9 +4,9 @@
 
 ## How is this different from the Einstein / Agentforce Trust Layer?
 
-The Trust Layer protects what the LLM *sees* (masking, grounding, retention at
+The Trust Layer protects what the LLM _sees_ (masking, grounding, retention at
 the prompt boundary). AgentGuard SF is the gate that decides, in real time,
-whether an agent-issued Apex action is allowed to touch your data *at all*. They
+whether an agent-issued Apex action is allowed to touch your data _at all_. They
 are complementary — see [LIMITS.md](../LIMITS.md).
 
 ## Is this a replacement for Agentforce Command Center?

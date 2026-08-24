@@ -5,11 +5,11 @@ AgentGuard SF project.
 
 ## Roles
 
-| Role | Who | Authority |
-| --- | --- | --- |
-| Maintainer (BDFL-lite for v1) | Yash Raghuvanshi | Final say on design, merges, releases |
-| Reviewer | Anyone with merged contributions | Approve/review PRs, no merge rights |
-| Contributor | Everyone | Propose changes via PR/issue |
+| Role                          | Who                              | Authority                             |
+| ----------------------------- | -------------------------------- | ------------------------------------- |
+| Maintainer (BDFL-lite for v1) | Yash Raghuvanshi                 | Final say on design, merges, releases |
+| Reviewer                      | Anyone with merged contributions | Approve/review PRs, no merge rights   |
+| Contributor                   | Everyone                         | Propose changes via PR/issue          |
 
 ## Decision-Making
 

@@ -35,9 +35,7 @@ if (!fs.existsSync(resultsDirArg)) {
 
 // Locate the test-result JSON produced by sf apex run test.
 function findResultJson(dir) {
-  const candidates = fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith('.json') && !f.includes('codecoverage'));
+  const candidates = fs.readdirSync(dir).filter((f) => f.endsWith('.json') && !f.includes('codecoverage'));
   if (candidates.length === 0) return null;
   return path.join(dir, candidates[0]);
 }
@@ -108,9 +106,7 @@ if (fs.existsSync(coreListFile)) {
     (data.coverage && data.coverage.coverageReport) ||
     (() => {
       // Older CLI versions write a separate codecoverage file.
-      const ccFile = fs
-        .readdirSync(resultsDirArg)
-        .find((f) => f.includes('codecoverage') && f.endsWith('.json'));
+      const ccFile = fs.readdirSync(resultsDirArg).find((f) => f.includes('codecoverage') && f.endsWith('.json'));
       return ccFile ? readJson(path.join(resultsDirArg, ccFile)).coverageReport || [] : [];
     })();
 

@@ -4,18 +4,18 @@
 
 ## `AgentGuard` (facade)
 
-| Member | Signature | Notes |
-| --- | --- | --- |
-| `wrap()` | `static GuardResult wrap(String policyName, String payloadJson)` | Single entry point. Fail-closed: any internal exception returns a BLOCK result. |
-| `BlockedException` | inner exception class | Thrown by callers when `GuardResult.isAllowed == false`. |
+| Member             | Signature                                                        | Notes                                                                           |
+| ------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `wrap()`           | `static GuardResult wrap(String policyName, String payloadJson)` | Single entry point. Fail-closed: any internal exception returns a BLOCK result. |
+| `BlockedException` | inner exception class                                            | Thrown by callers when `GuardResult.isAllowed == false`.                        |
 
 ## `GuardResult`
 
-| Field | Type | Notes |
-| --- | --- | --- |
-| `isAllowed` | `Boolean` | |
-| `reason` | `String` | Always populated on BLOCK/THROTTLE — a BLOCK without a reason string is a bug. |
-| `decision` | `String` | `ALLOW` / `BLOCK` / `THROTTLED` |
+| Field       | Type      | Notes                                                                          |
+| ----------- | --------- | ------------------------------------------------------------------------------ |
+| `isAllowed` | `Boolean` |                                                                                |
+| `reason`    | `String`  | Always populated on BLOCK/THROTTLE — a BLOCK without a reason string is a bug. |
+| `decision`  | `String`  | `ALLOW` / `BLOCK` / `THROTTLED`                                                |
 
 ## Gate classes
 

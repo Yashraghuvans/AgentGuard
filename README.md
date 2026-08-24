@@ -29,11 +29,11 @@ Enterprises want AI agents — Agentforce, MCP-connected assistants, custom LLM
 integrations — to invoke Apex actions that read and write real business data.
 Three failure modes stop security teams from allowing it:
 
-| Failure mode | What happens today |
-| --- | --- |
-| **Prompt injection** | An instruction hidden in a record, email, or knowledge article causes an agent to issue an action nobody asked for |
-| **CRUD/FLS bypass** | Apex invocables run in system context by default — an agent reads or mutates fields its requesting user was never permissioned to touch |
-| **Unaudited mutation** | A misbehaving agent fires DML in a loop with no throttle, no rollback boundary, and no real-time record of what it did |
+| Failure mode           | What happens today                                                                                                                      |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prompt injection**   | An instruction hidden in a record, email, or knowledge article causes an agent to issue an action nobody asked for                      |
+| **CRUD/FLS bypass**    | Apex invocables run in system context by default — an agent reads or mutates fields its requesting user was never permissioned to touch |
+| **Unaudited mutation** | A misbehaving agent fires DML in a loop with no throttle, no rollback boundary, and no real-time record of what it did                  |
 
 Existing Salesforce controls operate at other layers: the Einstein Trust Layer
 governs prompts, Agentforce Command Center reports outcomes after the fact.
@@ -83,13 +83,13 @@ tuned without an Apex deployment, versioned and reviewed like any other metadata
 
 ### Design Guarantees
 
-| Guarantee | Mechanism |
-| --- | --- |
-| **Fail closed** | Any exception inside a gate is a BLOCK, never an ALLOW |
-| **Restrictive by default** | Every policy field defaults to its most restrictive safe value; nothing is permitted unless explicitly configured |
-| **Running-user context only** | Access checks run `WITH USER_MODE` against the real user — never an elevated or claimed context |
-| **Audit survives rollback** | Decisions publish as Platform Events, outside the transaction's rollback boundary |
-| **One-line integration** | "Integrated correctly" and "integrated at all" are the same thing — one facade, per-gate toggles via policy |
+| Guarantee                     | Mechanism                                                                                                         |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Fail closed**               | Any exception inside a gate is a BLOCK, never an ALLOW                                                            |
+| **Restrictive by default**    | Every policy field defaults to its most restrictive safe value; nothing is permitted unless explicitly configured |
+| **Running-user context only** | Access checks run `WITH USER_MODE` against the real user — never an elevated or claimed context                   |
+| **Audit survives rollback**   | Decisions publish as Platform Events, outside the transaction's rollback boundary                                 |
+| **One-line integration**      | "Integrated correctly" and "integrated at all" are the same thing — one facade, per-gate toggles via policy       |
 
 ## Quick Start
 
@@ -128,14 +128,14 @@ Full walkthrough: [Getting Started](docs/getting-started.md).
 
 ## Threat Coverage
 
-| STRIDE category | Mitigating component |
-| --- | --- |
-| Spoofing — agent claims a higher-privileged context | `AccessGate` evaluates against the real running-user context only |
-| Tampering — injected payload reshaped into bulk/out-of-contract mutation | `SchemaValidator` rejects payloads violating the declared contract |
-| Repudiation — destructive call with no record | `AuditPublisher` logs every decision with actor, payload hash, timestamp |
-| Information disclosure — fields the user cannot see | `AccessGate` strips/blocks inaccessible fields on read paths |
-| Denial of service — flooded actions exhausting limits | `RateLimiter` sliding-window per-agent/per-action budgets |
-| Elevation of privilege — partial bulk mutations leave inconsistent state | `RollbackGuard` Savepoint boundary and record ceiling |
+| STRIDE category                                                          | Mitigating component                                                     |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| Spoofing — agent claims a higher-privileged context                      | `AccessGate` evaluates against the real running-user context only        |
+| Tampering — injected payload reshaped into bulk/out-of-contract mutation | `SchemaValidator` rejects payloads violating the declared contract       |
+| Repudiation — destructive call with no record                            | `AuditPublisher` logs every decision with actor, payload hash, timestamp |
+| Information disclosure — fields the user cannot see                      | `AccessGate` strips/blocks inaccessible fields on read paths             |
+| Denial of service — flooded actions exhausting limits                    | `RateLimiter` sliding-window per-agent/per-action budgets                |
+| Elevation of privilege — partial bulk mutations leave inconsistent state | `RollbackGuard` Savepoint boundary and record ceiling                    |
 
 Full model, explicit non-goals, and the maintained risk register:
 [threat-model.md](docs/threat-model.md) · [risk-register.md](docs/risk-register.md).
@@ -153,28 +153,28 @@ Honest scope boundaries ([LIMITS.md](LIMITS.md)):
 
 ## Documentation
 
-| Document | Contents |
-| --- | --- |
-| [Getting Started](docs/getting-started.md) | Install, first wrap, first blocked call |
-| [Architecture](docs/architecture.md) | Component diagram, request lifecycle, ADR summaries |
-| [Policy Configuration](docs/policy-configuration.md) | Full `Guard_Policy__mdt` field reference |
-| [API Reference](docs/api-reference.md) | Public method signatures |
-| [Threat Model](docs/threat-model.md) | STRIDE analysis mapped to components |
-| [Risk Register](docs/risk-register.md) | Known limitations and mitigations |
-| [Testing](docs/testing.md) | Coverage matrix mapping threats to automated tests |
-| [Compliance Mapping](docs/compliance.md) | SOC 2 / GDPR / HIPAA evidence contributions |
+| Document                                             | Contents                                            |
+| ---------------------------------------------------- | --------------------------------------------------- |
+| [Getting Started](docs/getting-started.md)           | Install, first wrap, first blocked call             |
+| [Architecture](docs/architecture.md)                 | Component diagram, request lifecycle, ADR summaries |
+| [Policy Configuration](docs/policy-configuration.md) | Full `Guard_Policy__mdt` field reference            |
+| [API Reference](docs/api-reference.md)               | Public method signatures                            |
+| [Threat Model](docs/threat-model.md)                 | STRIDE analysis mapped to components                |
+| [Risk Register](docs/risk-register.md)               | Known limitations and mitigations                   |
+| [Testing](docs/testing.md)                           | Coverage matrix mapping threats to automated tests  |
+| [Compliance Mapping](docs/compliance.md)             | SOC 2 / GDPR / HIPAA evidence contributions         |
 
 A hosted documentation site (Docusaurus on GitHub Pages) ships at v1.0.
 
 ## Roadmap
 
-| Milestone | Scope | Target |
-| --- | --- | --- |
-| v0.1 — Core Gate | `wrap()` facade, SchemaValidator, AccessGate, audit event | Weeks 1–2 |
-| v0.3 — Rate & Rollback | RateLimiter (Platform Cache), RollbackGuard (Savepoint) | Weeks 3–4 |
-| v0.6 — Policy Metadata | Declarative `Guard_Policy__mdt` wiring | Weeks 5–6 |
-| v0.8 — Observability | LWC audit dashboard, SF CLI audit-tail plugin | Weeks 7–8 |
-| v1.0 — Public Launch | Docs site, unlocked package, ≥90% core coverage | Weeks 9–10 |
+| Milestone              | Scope                                                     | Target     |
+| ---------------------- | --------------------------------------------------------- | ---------- |
+| v0.1 — Core Gate       | `wrap()` facade, SchemaValidator, AccessGate, audit event | Weeks 1–2  |
+| v0.3 — Rate & Rollback | RateLimiter (Platform Cache), RollbackGuard (Savepoint)   | Weeks 3–4  |
+| v0.6 — Policy Metadata | Declarative `Guard_Policy__mdt` wiring                    | Weeks 5–6  |
+| v0.8 — Observability   | LWC audit dashboard, SF CLI audit-tail plugin             | Weeks 7–8  |
+| v1.0 — Public Launch   | Docs site, unlocked package, ≥90% core coverage           | Weeks 9–10 |
 
 Detailed changelog: [CHANGELOG.md](CHANGELOG.md).
 
