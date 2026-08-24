@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+
+# Local tool installs (PMD etc.)
+tools/
+
+# Secrets — never commit credentials
+server.key
+server.key.orig
+*.pem
+*.p12
+.env
+.env.*
+
+# Salesforce DX / CLI artifacts
+.sf/
+.sfdx/
+.localdevserver/
+deploy-options.json
+
+# Test & analysis output
+test-results/
+coverage/
+pmd-report.*
+*.sarif
+
+# Build artifacts
+*.zip
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp

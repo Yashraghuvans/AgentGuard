@@ -1,0 +1,11 @@
+#!/bin/sh
+# Husky pre-commit: enforce formatting + block obvious secrets (RULES.md #9)
+npx lint-staged
+
+# Lightweight secret scan on staged files
+if git diff --cached --diff-filter=ACMR --name-only -z | xargs -0 grep -lEi '(server\.key|BEGIN (RSA )?PRIVATE KEY|sf org login jwt|password\s*=\s*[^\s]{8,})' 2>/dev/null; then
+  echo ""
+  echo "ERROR: potential secret detected in staged files."
+  echo "Remove credentials before committing. See SECURITY.md and RULES.md #9."
+  exit 1
+fi

@@ -1,0 +1,15 @@
+# Metadata API should not see non-Salesforce project files
+package.json
+package-lock.json
+node_modules/
+tools/
+.github/
+docs/
+examples/
+scripts/
+config/
+*.md
+*.docx
+.eslint*
+.prettierrc
+.husky/

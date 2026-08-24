@@ -1,0 +1,16 @@
+{
+  "name": "AgentGuard SF",
+  "namespace": "",
+  "sourceApiVersion": "62.0",
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true,
+      "package": "AgentGuardSF",
+      "versionName": "ver 0.1.0",
+      "versionNumber": "0.1.0.0",
+      "versionDescription": "Core gate: AgentGuard.wrap() facade, SchemaValidator, AccessGate, AuditPublisher, AgentGuard_Audit__e platform event",
+      "releaseNotesUrl": "https://github.com/yashraghuvanshi/agentguard-sf/blob/main/CHANGELOG.md"
+    }
+  ]
+}
