@@ -1,0 +1,137 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-static-analysis:
+    name: Lint & Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: npm ci
+      - name: Prettier + ESLint
+        run: npm run lint
+      - name: PMD Apex static analysis (security + performance)
+        run: npm run pmd:apex
+      - name: Upload PMD report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pmd-report
+          path: pmd-report.*
+          if-no-files-found: ignore
+
+  unit-tests:
+    name: Unit Tests (scratch org)
+    needs: lint-and-static-analysis
+    runs-on: ubuntu-latest
+    env:
+      SF_DISABLE_AUTOUPDATE: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install SF CLI
+        run: npm install -g @salesforce/cli
+      - name: Authenticate Dev Hub
+        env:
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
+          SF_DEVHUB_USER: ${{ secrets.SF_DEVHUB_USER }}
+          SF_DEVHUB_URL: ${{ secrets.SF_DEVHUB_URL }}
+        run: |
+          echo "$SF_JWT_KEY" > server.key
+          sf org login jwt \
+            --client-id "$SF_CLIENT_ID" \
+            --jwt-key-file server.key \
+            --username "$SF_DEVHUB_USER" \
+            --instance-url "${SF_DEVHUB_URL:-https://login.salesforce.com}" \
+            --set-default-dev-hub
+      - name: Create Scratch Org
+        run: sf org create scratch --definition-file config/project-scratch-def.json --alias ci-org --duration-days 1 --wait 10
+      - name: Deploy Source
+        run: sf project deploy start --target-org ci-org --wait 20
+      - name: Run Apex Test Suite
+        run: sf apex run test --target-org ci-org --code-coverage --result-format json --output-dir ./test-results --wait 30
+      - name: Enforce Coverage Threshold (90% on core/)
+        run: node scripts/ci/check-coverage.js ./test-results 90
+      - name: Delete Scratch Org
+        if: always()
+        run: sf org delete scratch --target-org ci-org --no-prompt || true
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: test-results/
+          if-no-files-found: ignore
+      - name: Clean up credentials
+        if: always()
+        run: rm -f server.key
+
+  flow-integration-tests:
+    name: Flow / Integration Tests (scratch org)
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    env:
+      SF_DISABLE_AUTOUPDATE: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install SF CLI
+        run: npm install -g @salesforce/cli
+      - name: Authenticate Dev Hub
+        env:
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
+          SF_DEVHUB_USER: ${{ secrets.SF_DEVHUB_USER }}
+          SF_DEVHUB_URL: ${{ secrets.SF_DEVHUB_URL }}
+        run: |
+          echo "$SF_JWT_KEY" > server.key
+          sf org login jwt \
+            --client-id "$SF_CLIENT_ID" \
+            --jwt-key-file server.key \
+            --username "$SF_DEVHUB_USER" \
+            --instance-url "${SF_DEVHUB_URL:-https://login.salesforce.com}" \
+            --set-default-dev-hub
+      - name: Create Scratch Org
+        run: sf org create scratch --definition-file config/project-scratch-def.json --alias flow-org --duration-days 1 --wait 10
+      - name: Deploy Source + Seed Data
+        run: |
+          sf project deploy start --target-org flow-org --wait 20
+          sf apex run --file scripts/apex/seed_test_data.apex --target-org flow-org
+      - name: Run Flow / E2E Scenarios
+        run: node scripts/ci/run-flow-scenarios.js --org flow-org
+      - name: Delete Scratch Org
+        if: always()
+        run: sf org delete scratch --target-org flow-org --no-prompt || true
+      - name: Clean up credentials
+        if: always()
+        run: rm -f server.key

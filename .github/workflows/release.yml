@@ -1,0 +1,62 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+jobs:
+  build-package-version:
+    name: Build & Publish 2GP Package Version
+    runs-on: ubuntu-latest
+    env:
+      SF_DISABLE_AUTOUPDATE: 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install SF CLI
+        run: npm install -g @salesforce/cli
+      - name: Authenticate Dev Hub
+        env:
+          SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
+          SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
+          SF_DEVHUB_USER: ${{ secrets.SF_DEVHUB_USER }}
+          SF_DEVHUB_URL: ${{ secrets.SF_DEVHUB_URL }}
+        run: |
+          echo "$SF_JWT_KEY" > server.key
+          sf org login jwt \
+            --client-id "$SF_CLIENT_ID" \
+            --jwt-key-file server.key \
+            --username "$SF_DEVHUB_USER" \
+            --instance-url "${SF_DEVHUB_URL:-https://login.salesforce.com}" \
+            --set-default-dev-hub
+      - name: Create Package Version
+        id: pkg
+        run: |
+          sf package version create \
+            --package AgentGuardSF \
+            --installation-key-bypass \
+            --code-coverage \
+            --wait 30 \
+            --json > package-create-result.json
+          SUBSCRIBER_PACKAGE_VERSION_ID=$(node -e "console.log(JSON.parse(require('fs').readFileSync('package-create-result.json','utf8')).result.SubscriberPackageVersionId)")
+          echo "subscriber_id=$SUBSCRIBER_PACKAGE_VERSION_ID" >> "$GITHUB_OUTPUT"
+          echo "Created package version: $SUBSCRIBER_PACKAGE_VERSION_ID"
+      - name: Promote to Released
+        run: sf package version promote --package "AgentGuardSF@${{ github.ref_name }}" --no-prompt || true
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          body_path: CHANGELOG.md
+      - name: Clean up credentials
+        if: always()
+        run: rm -f server.key
