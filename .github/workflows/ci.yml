@@ -40,6 +40,9 @@ jobs:
   unit-tests:
     name: Unit Tests (scratch org)
     needs: lint-and-static-analysis
+    # Skipped until Dev Hub JWT secrets are configured and the SF_CI_ENABLED
+    # repository variable is set to true. See docs/ci-setup.md (issue #1).
+    if: vars.SF_CI_ENABLED == 'true'
     runs-on: ubuntu-latest
     env:
       SF_DISABLE_AUTOUPDATE: 'true'
@@ -93,6 +96,9 @@ jobs:
   flow-integration-tests:
     name: Flow / Integration Tests (scratch org)
     needs: unit-tests
+    # Skipped until Dev Hub JWT secrets are configured and the SF_CI_ENABLED
+    # repository variable is set to true. See docs/ci-setup.md (issue #1).
+    if: vars.SF_CI_ENABLED == 'true'
     runs-on: ubuntu-latest
     env:
       SF_DISABLE_AUTOUPDATE: 'true'
