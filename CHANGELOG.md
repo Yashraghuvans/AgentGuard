@@ -7,13 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — v0.1 value models (#5)
+
+- `GuardResult` — immutable decision value type (ALLOW/BLOCK/THROTTLED/ROLLBACK);
+  non-blank reason enforced at construction for every non-ALLOW outcome.
+- `GuardPolicy` — restrictive-by-default policy model: disabled by default,
+  zero record ceiling, zero rate budget, empty scoping sets.
+- `PolicyRegistry` — name → policy resolution; unknown names resolve to a
+  disabled (all-blocking) policy, never null. Live `Guard_Policy__mdt`
+  resolution lands with v0.6 (#13).
+- `TestDataFactory` — shared fixture factory for all test suites.
+- Tests: `GuardPolicyTest`, `GuardResultTest` (positive + negative paths).
+
 ### Planned — v0.1 Core Gate
 
 - `AgentGuard.cls` — public `wrap()` facade with fail-closed boundary (ADR-002)
 - `SchemaValidator.cls` — schema contract validation of AI-originated payloads
 - `AccessGate.cls` — CRUD/FLS enforcement `WITH USER_MODE` against running user
 - `AuditPublisher.cls` — real-time `AgentGuard_Audit__e` Platform Event on every decision
-- `GuardResult.cls` / `GuardPolicy.cls` — value types
 - Unit tests: positive + negative + bulk paths per gate class
 
 ### Planned — later milestones
