@@ -51,12 +51,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - uses: actions/setup-java@v4
+      - uses: salesforcecli/setup-sf@v2
         with:
-          distribution: temurin
-          java-version: '17'
-      - name: Install SF CLI
-        run: npm install -g @salesforce/cli
+          version: latest
       - name: Authenticate Dev Hub
         env:
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
@@ -70,6 +67,7 @@ jobs:
             --jwt-key-file server.key \
             --username "$SF_DEVHUB_USER" \
             --instance-url "${SF_DEVHUB_URL:-https://login.salesforce.com}" \
+            --alias devhub \
             --set-default-dev-hub
       - name: Create Scratch Org
         run: sf org create scratch --definition-file config/project-scratch-def.json --alias ci-org --duration-days 1 --wait 10
@@ -107,12 +105,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - uses: actions/setup-java@v4
+      - uses: salesforcecli/setup-sf@v2
         with:
-          distribution: temurin
-          java-version: '17'
-      - name: Install SF CLI
-        run: npm install -g @salesforce/cli
+          version: latest
       - name: Authenticate Dev Hub
         env:
           SF_JWT_KEY: ${{ secrets.SF_JWT_KEY }}
@@ -126,6 +121,7 @@ jobs:
             --jwt-key-file server.key \
             --username "$SF_DEVHUB_USER" \
             --instance-url "${SF_DEVHUB_URL:-https://login.salesforce.com}" \
+            --alias devhub \
             --set-default-dev-hub
       - name: Create Scratch Org
         run: sf org create scratch --definition-file config/project-scratch-def.json --alias flow-org --duration-days 1 --wait 10
