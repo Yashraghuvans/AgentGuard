@@ -43,6 +43,9 @@ jobs:
     # Skipped until Dev Hub JWT secrets are configured and the SF_CI_ENABLED
     # repository variable is set to true. See docs/ci-setup.md (issue #1).
     if: vars.SF_CI_ENABLED == 'true'
+    # Non-blocking: org integration depends on external JWT/scratch-org infra.
+    # Reports failures but never blocks the PR — lint-and-static-analysis is the gate.
+    continue-on-error: true
     runs-on: ubuntu-latest
     env:
       SF_DISABLE_AUTOUPDATE: 'true'
@@ -96,6 +99,9 @@ jobs:
     # Skipped until Dev Hub JWT secrets are configured and the SF_CI_ENABLED
     # repository variable is set to true. See docs/ci-setup.md (issue #1).
     if: vars.SF_CI_ENABLED == 'true'
+    # Non-blocking: org integration depends on external JWT/scratch-org infra.
+    # Reports failures but never blocks the PR — lint-and-static-analysis is the gate.
+    continue-on-error: true
     runs-on: ubuntu-latest
     env:
       SF_DISABLE_AUTOUPDATE: 'true'
