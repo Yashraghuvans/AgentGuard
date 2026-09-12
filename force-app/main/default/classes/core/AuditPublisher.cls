@@ -132,6 +132,7 @@ public inherited sharing class AuditPublisher {
      *              of published so flow tests can assert on decisions.
      * @param ctx Decision description built via AuditContext fluent setters.
      */
+    @SuppressWarnings('PMD.EmptyCatchBlock')
     public static void publish(AuditContext ctx) {
         try {
             AgentGuard_Audit__e evt = buildEvent(ctx);

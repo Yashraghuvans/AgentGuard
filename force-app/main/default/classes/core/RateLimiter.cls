@@ -118,6 +118,7 @@ public inherited sharing class RateLimiter {
     }
 
     @TestVisible
+    @SuppressWarnings('PMD.EmptyCatchBlock')
     public static void clearCache(String actionName) {
         String cacheKey = CACHE_KEY_PREFIX + UserInfo.getUserId() + '_' + actionName;
         if (Test.isRunningTest() && !disableTestCache) {

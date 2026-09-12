@@ -104,6 +104,7 @@ public inherited sharing class RollbackGuard {
         GuardResult execute(GuardResult allowResult);
     }
 
+    @SuppressWarnings('PMD.EmptyCatchBlock')
     private static Integer countRecords(String payloadJson) {
         if (String.isBlank(payloadJson)) {
             return 0;
