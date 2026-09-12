@@ -49,6 +49,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SF_DISABLE_AUTOUPDATE: 'true'
+      # Dev Hub is authed via our custom AgentGuard CI connected app; scratch-org
+      # signup can't replicate a custom app, so use Salesforce's built-in
+      # PlatformCLI app for signup (fixes C-1016 RemoteOrgSignupFailed).
+      SF_SCRATCH_SIGNUP_CONNECTED_APP: PlatformCLI
+      SF_SCRATCH_SIGNUP_CALLBACK_URL: http://localhost:1717/OauthRedirect
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
