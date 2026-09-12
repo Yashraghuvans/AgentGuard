@@ -71,7 +71,7 @@ Repository → **Settings → Branches → Add branch protection rule** for `mai
 - [ ] Include administrators (RULES.md #1: no exceptions, including maintainer)
 
 `sec/*` second-review expectations are process rules documented in
-[GOVERNANCE.md](../GOVERNANCE.md); GitHub cannot enforce reviewer identity on a
+[GOVERNANCE.md](/context/GOVERNANCE.md); GitHub cannot enforce reviewer identity on a
 solo project — record the double-read trace in the PR body per that protocol.
 
 ## Verification
