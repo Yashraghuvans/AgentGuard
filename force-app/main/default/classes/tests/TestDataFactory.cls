@@ -28,12 +28,11 @@ public inherited sharing class TestDataFactory {
             UserName = username,
             FirstName = 'AgentGuard',
             LastName = safeAlias.capitalize(),
-            NickName = safeAlias,
             ProfileId = p.Id,
             LocaleSidKey = 'en_US',
             LanguageLocaleKey = 'en_US',
             EmailEncodingKey = 'UTF-8',
-            TimeZoneIdKey = 'America/Los_Angeles'
+            TimeZoneSidKey = 'America/Los_Angeles'
         );
         insert u;
         return u;
