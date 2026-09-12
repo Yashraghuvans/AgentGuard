@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Operation__c</fullName>
+    <label>Operation</label>
+    <type>Picklist</type>
+    <required>false</required>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>READ</fullName>
+                <default>false</default>
+                <label>Read</label>
+            </value>
+            <value>
+                <fullName>CREATE</fullName>
+                <default>false</default>
+                <label>Create</label>
+            </value>
+            <value>
+                <fullName>MODIFY</fullName>
+                <default>false</default>
+                <label>Modify</label>
+            </value>
+            <value>
+                <fullName>REMOVE</fullName>
+                <default>false</default>
+                <label>Remove</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <description>Data operation type: READ, CREATE, MODIFY, or REMOVE. Determines which CRUD/FLS checks AccessGate enforces.</description>
+</CustomField>

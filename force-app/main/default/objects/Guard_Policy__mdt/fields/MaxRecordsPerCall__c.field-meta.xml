@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MaxRecordsPerCall__c</fullName>
+    <label>Max Records Per Call</label>
+    <type>Number</type>
+    <precision>18</precision>
+    <scale>0</scale>
+    <defaultValue>1</defaultValue>
+    <required>false</required>
+    <description>Maximum number of records that can be mutated in a single wrapped call. Zero blocks all calls.</description>
+</CustomField>

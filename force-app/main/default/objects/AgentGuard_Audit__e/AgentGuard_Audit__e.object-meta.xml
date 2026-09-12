@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>AgentGuard Audit Event</label>
+    <pluralLabel>AgentGuard Audit Events</pluralLabel>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <eventType>HighVolume</eventType>
+    <description>Immutable real-time audit stream for every AgentGuard decision (ALLOW, BLOCK, THROTTLED, ROLLBACK). Published outside the transaction rollback boundary per ADR-001 so blocked attempts always leave a durable record.</description>
+</CustomObject>
