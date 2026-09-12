@@ -19,7 +19,6 @@ public inherited sharing class SchemaValidator {
      * @return GuardResult: ALLOW if valid, BLOCK with reason if invalid.
      */
     public static GuardResult validate(GuardPolicy policy, String payloadJson) {
-        Long start = System.currentTimeMillis();
         try {
             if (String.isBlank(payloadJson)) {
                 return GuardResult.block('SCHEMA', policy.policyName, policy.policyName, 'Payload JSON is empty');

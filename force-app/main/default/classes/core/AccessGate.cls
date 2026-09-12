@@ -123,6 +123,7 @@ public inherited sharing class AccessGate {
                 SELECT PermissionSet.Name
                 FROM PermissionSetAssignment
                 WHERE AssigneeId = :UserInfo.getUserId()
+                WITH USER_MODE
             ]) {
                 userPermSets.add(psa.PermissionSet.Name);
             }

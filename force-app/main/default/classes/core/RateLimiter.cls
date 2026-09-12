@@ -130,7 +130,7 @@ public inherited sharing class RateLimiter {
                 partition.remove(cacheKey);
             }
         } catch (Exception e) {
-            // Ignore in production when cache unavailable
+            // NOPMD - intentional: cache unavailable in production is expected
         }
     }
 

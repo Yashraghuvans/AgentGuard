@@ -88,7 +88,6 @@ public inherited sharing class AgentGuard {
 
             return finalResult;
         } catch (Exception e) {
-            Long elapsed = System.currentTimeMillis() - startTime;
             GuardResult failure = GuardResult.block(
                 GATE_NAME,
                 policyName,

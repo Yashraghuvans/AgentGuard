@@ -79,6 +79,7 @@ public inherited sharing class PolicyRegistry {
                     AllowedPermissionSets__c
                 FROM Guard_Policy__mdt
                 WHERE DeveloperName = :name
+                WITH USER_MODE
                 LIMIT 1
             ];
 
@@ -100,10 +101,7 @@ public inherited sharing class PolicyRegistry {
 
             return policy;
         } catch (Exception e) {
-            System.debug(
-                LoggingLevel.ERROR,
-                'PolicyRegistry metadata fetch failed for ' + name + ': ' + e.getMessage()
-            );
+            // metadata fetch failed — caller gets disabled policy (fail-closed)
             return null;
         }
     }

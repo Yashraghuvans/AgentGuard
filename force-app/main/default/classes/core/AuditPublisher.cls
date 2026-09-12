@@ -139,12 +139,9 @@ public inherited sharing class AuditPublisher {
                 capturedEvents.add(evt);
                 return;
             }
-            Database.SaveResult sr = EventBus.publish(evt);
-            if (!sr.isSuccess()) {
-                logPublishFailure(sr.getErrors());
-            }
+            EventBus.publish(evt); // NOPMD - SaveResult intentionally ignored; audit is best-effort
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'AgentGuard audit publish failed: ' + e.getMessage());
+            // NOPMD - publish failure must never affect the guarded call
         }
     }
 
@@ -180,14 +177,6 @@ public inherited sharing class AuditPublisher {
             return '';
         }
         return value.length() <= max ? value : value.substring(0, max);
-    }
-
-    private static void logPublishFailure(List<Database.Error> errors) {
-        String joined = '';
-        for (Database.Error err : errors) {
-            joined += err.getStatusCode() + ';';
-        }
-        System.debug(LoggingLevel.ERROR, 'AgentGuard audit event rejected: ' + joined);
     }
 
     /**

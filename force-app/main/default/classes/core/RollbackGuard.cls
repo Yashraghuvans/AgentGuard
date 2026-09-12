@@ -117,7 +117,7 @@ public inherited sharing class RollbackGuard {
                 return 1;
             }
         } catch (Exception e) {
-            // Treat parse errors as 0 records — schema validation will catch them
+            // NOPMD - intentional: parse errors default to 0, schema validation catches them
         }
         return 0;
     }
