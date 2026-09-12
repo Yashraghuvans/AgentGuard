@@ -5,7 +5,9 @@ npx lint-staged
 # Lightweight secret scan on staged files.
 # Detects credential MATERIAL, not tooling that references secrets
 # (e.g. "sf org login jwt" or "${{ secrets.X }}" placeholders are fine).
-if git diff --cached --diff-filter=ACMR --name-only -z | xargs -0 grep -lEi \
+# Note: guard against empty diff (xargs -0 exits 0 on macOS with empty stdin).
+STAGED_FILES=$(git diff --cached --diff-filter=ACMR --name-only -z)
+if [ -n "$STAGED_FILES" ] && printf '%s' "$STAGED_FILES" | xargs -0 grep -lEi \
     -e '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|(password|passwd|api[_-]?key|client[_-]?secret)[[:space:]]*[=:][[:space:]]*["'\'']?[A-Za-z0-9+/_-]{16,}' \
     2>/dev/null; then
   echo ""
