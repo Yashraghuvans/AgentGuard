@@ -89,11 +89,13 @@ public inherited sharing class GuardPolicy {
      */
     public Set<String> allowedPermissionSets { get; private set; }
 
+    private static final Operation DEFAULT_OPERATION = Operation.READ;
+
     private GuardPolicy(String name) {
         policyName = name;
         isEnabled = false;
         targetSObjectType = '';
-        operation = Operation.READ;
+        operation = DEFAULT_OPERATION;
         schemaContractJson = '';
         maxRecordsPerCall = UNLIMITED_FORBIDDEN;
         rateLimitPerMinute = UNLIMITED_FORBIDDEN;
@@ -137,7 +139,7 @@ public inherited sharing class GuardPolicy {
      * @return This policy.
      */
     public GuardPolicy withOperation(Operation op) {
-        operation = op == null ? Operation.READ : op;
+        operation = op == null ? DEFAULT_OPERATION : op;
         return this;
     }
 

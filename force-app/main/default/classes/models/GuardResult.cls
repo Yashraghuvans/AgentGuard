@@ -56,7 +56,6 @@ public inherited sharing class GuardResult {
      */
     public Boolean flagged { get; private set; }
 
-    @TestVisible
     private Savepoint savepointToken;
 
     private GuardResult(
@@ -145,8 +144,16 @@ public inherited sharing class GuardResult {
         savepointToken = sp;
     }
 
+    public Savepoint getSavepoint() {
+        return savepointToken;
+    }
+
+    public static GuardResult block(String gate, String policy, String why) {
+        return block(gate, policy, policy, why);
+    }
+
     private static void validateReason(String why, String decisionLabel) {
-        if (why == null || why.trim().isEmpty()) {
+        if (String.isBlank(why)) {
             throw new IllegalArgumentException(decisionLabel + ' requires a non-blank reason');
         }
     }
