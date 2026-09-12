@@ -7,6 +7,7 @@ tools/
 # Secrets — never commit credentials
 server.key
 server.key.orig
+server.crt
 *.pem
 *.p12
 .env
