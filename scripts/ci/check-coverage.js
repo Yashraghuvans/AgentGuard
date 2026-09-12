@@ -75,9 +75,29 @@ let total = null;
 if (summary.codeCoverage && typeof summary.codeCoverage.totalLines === 'number') {
   covered = summary.codeCoverage.coveredLines;
   total = summary.codeCoverage.totalLines;
+} else if (data.coverage && data.coverage.summary && typeof data.coverage.summary.totalLines === 'number') {
+  covered = data.coverage.summary.coveredLines;
+  total = data.coverage.summary.totalLines;
 } else if (data.coverage && Array.isArray(data.coverage.coverageReport)) {
   covered = data.coverage.coverageReport.reduce((sum, c) => sum + (c.coveredLines || 0), 0);
   total = data.coverage.coverageReport.reduce((sum, c) => sum + (c.totalLines || 0), 0);
+} else if (data.coverage && Array.isArray(data.coverage.coverage)) {
+  covered = data.coverage.coverage.reduce((sum, c) => sum + (c.totalCovered || 0), 0);
+  total = data.coverage.coverage.reduce((sum, c) => sum + (c.totalLines || 0), 0);
+}
+
+if (covered === null || !total) {
+  const ccFile = fs.readdirSync(resultsDirArg).find((f) => f.includes('codecoverage') && f.endsWith('.json'));
+  if (ccFile) {
+    const ccData = readJson(path.join(resultsDirArg, ccFile));
+    if (Array.isArray(ccData.coverageReport)) {
+      covered = ccData.coverageReport.reduce((sum, c) => sum + (c.coveredLines || 0), 0);
+      total = ccData.coverageReport.reduce((sum, c) => sum + (c.totalLines || 0), 0);
+    } else if (Array.isArray(ccData)) {
+      covered = ccData.reduce((sum, c) => sum + (c.totalCovered || 0), 0);
+      total = ccData.reduce((sum, c) => sum + (c.totalLines || 0), 0);
+    }
+  }
 }
 
 if (covered === null || !total) {
@@ -102,13 +122,19 @@ if (fs.existsSync(coreListFile)) {
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const report =
-    (data.coverage && data.coverage.coverageReport) ||
-    (() => {
-      // Older CLI versions write a separate codecoverage file.
-      const ccFile = fs.readdirSync(resultsDirArg).find((f) => f.includes('codecoverage') && f.endsWith('.json'));
-      return ccFile ? readJson(path.join(resultsDirArg, ccFile)).coverageReport || [] : [];
-    })();
+  const report = (() => {
+    if (data.coverage && Array.isArray(data.coverage.coverageReport)) return data.coverage.coverageReport;
+    if (data.coverage && Array.isArray(data.coverage.coverage)) return data.coverage.coverage;
+
+    // Older CLI versions write a separate codecoverage file.
+    const ccFile = fs.readdirSync(resultsDirArg).find((f) => f.includes('codecoverage') && f.endsWith('.json'));
+    if (!ccFile) return [];
+
+    const ccData = readJson(path.join(resultsDirArg, ccFile));
+    if (Array.isArray(ccData.coverageReport)) return ccData.coverageReport;
+    if (Array.isArray(ccData)) return ccData;
+    return [];
+  })();
 
   let allCorePass = true;
   for (const cls of coreClasses) {
@@ -118,7 +144,8 @@ if (fs.existsSync(coreListFile)) {
       allCorePass = false;
       continue;
     }
-    const pct = entry.totalLines ? Math.floor((entry.coveredLines / entry.totalLines) * 10000) / 100 : 0;
+    const coveredLines = entry.coveredLines ?? entry.totalCovered ?? 0;
+    const pct = entry.totalLines ? Math.floor((coveredLines / entry.totalLines) * 10000) / 100 : 0;
     const ok = pct >= threshold;
     if (!ok) allCorePass = false;
     console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${cls}: ${pct}%`);
