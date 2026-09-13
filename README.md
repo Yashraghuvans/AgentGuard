@@ -242,41 +242,6 @@ Honest scope boundaries ([LIMITS.md](/context/LIMITS.md)):
 
 ---
 
-## Project Structure
-
-```
-force-app/main/default/
-  classes/
-    core/               # Gate chain: AgentGuard, SchemaValidator, AccessGate,
-    |                   # RateLimiter, RollbackGuard, AuditPublisher, PolicyRegistry
-    models/             # Value types: GuardResult, GuardPolicy
-    tests/              # 75 tests, 100% pass rate
-  objects/
-    AgentGuard_Audit__e/   # Platform Event — one per gate decision
-    Guard_Policy__mdt/     # Custom Metadata Type — policy per action
-examples/
-  basic-invocable-wrap/    # Minimal working integration
-  agentforce-action-integration/  # Agentforce-specific pattern
-docs/                   # Extended documentation
-context/                # Governance, rules, and contribution guidelines
-```
-
----
-
-## Roadmap
-
-| Milestone              | Scope                                                  | Status        |
-| ---------------------- | ------------------------------------------------------ | ------------- |
-| v0.1 — Core Gate       | `wrap()` facade, all five gates, audit event, 75 tests | **Complete**  |
-| v0.3 — Rate & Rollback | Platform Cache partition, Savepoint recovery flows     | In gate chain |
-| v0.6 — Policy Metadata | Live `Guard_Policy__mdt` wiring, seed data             | Partial       |
-| v0.8 — Observability   | LWC audit dashboard, CLI audit-tail plugin             | Planned       |
-| v1.0 — Public Launch   | Docs site, unlocked package, 90% core coverage gate    | Planned       |
-
-Detailed changelog: [CHANGELOG.md](CHANGELOG.md).
-
----
-
 ## Security Policy
 
 AgentGuard SF is a security tool; vulnerability reports are treated as the highest-priority work in this repository.
