@@ -13,3 +13,5 @@ config/
 .eslint*
 .prettierrc
 .husky/
+**/jsconfig.json
+**/.eslintrc.json

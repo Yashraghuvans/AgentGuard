@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Update Account Territory</label>
+    <protected>false</protected>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>TargetSObjectType__c</field>
+        <value xsi:type="xsd:string">Account</value>
+    </values>
+    <values>
+        <field>Operation__c</field>
+        <value xsi:type="xsd:string">MODIFY</value>
+    </values>
+    <values>
+        <field>SchemaContract__c</field>
+        <value xsi:type="xsd:string">{"properties": {"AccountId": {"type": "string", "required": true}, "Territory__c": {"type": "string", "nullable": true}, "Status__c": {"type": "string", "nullable": true}}, "required": ["AccountId"]}</value>
+    </values>
+    <values>
+        <field>MaxRecordsPerCall__c</field>
+        <value xsi:type="xsd:double">5.0</value>
+    </values>
+    <values>
+        <field>RateLimitPerMinute__c</field>
+        <value xsi:type="xsd:double">10.0</value>
+    </values>
+    <values>
+        <field>RateLimitWindowSeconds__c</field>
+        <value xsi:type="xsd:double">60.0</value>
+    </values>
+    <values>
+        <field>AllowedProfiles__c</field>
+        <value xsi:type="xsd:string">Agentforce Service Agent;System Administrator</value>
+    </values>
+    <values>
+        <field>AllowedPermissionSets__c</field>
+        <value xsi:type="xsd:string">Agent_Tools;Integration_User</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>GateName__c</fullName>
+    <label>Gate Name</label>
+    <length>40</length>
+    <required>false</required>
+    <type>Text</type>
+    <description>Gate that produced the decision: FACADE | SCHEMA | ACCESS | RATE | ROLLBACK.</description>
+</CustomField>

@@ -13,14 +13,14 @@ Salesforce platform behavior — verify against official docs or existing test c
 2. Never remove or bypass the Savepoint/rollback boundary in RollbackGuard.
 3. Every new public method in `force-app/main/default/classes/core/` requires a
    corresponding unit test in the same PR — no exceptions, no "will add tests later".
-4. Do not introduce external callouts into the core enforcement path (see LIMITS.md).
+4. Do not introduce external callouts into the core enforcement path (see context/LIMITS.md).
 5. All new policy fields on Guard_Policy__mdt must be documented in
    docs/policy-configuration.md in the same PR.
 
 ## Before Writing Code
 
-1. Read SKILLS.md for the domain context you need.
-2. Read RULES.md for constraints specific to the area you're touching.
+1. Read context/SKILLS.md for the domain context you need.
+2. Read context/RULES.md for constraints specific to the area you're touching.
 3. State your implementation plan in the PR description before writing tests.
 
 ## Workflow AI Agents Must Follow

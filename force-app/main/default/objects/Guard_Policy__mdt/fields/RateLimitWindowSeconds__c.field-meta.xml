@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RateLimitWindowSeconds__c</fullName>
+    <label>Rate Limit Window (Seconds)</label>
+    <type>Number</type>
+    <precision>18</precision>
+    <scale>0</scale>
+    <defaultValue>60</defaultValue>
+    <required>false</required>
+    <description>Rolling window length in seconds for rate limiting. Clamped to [10, 3600]. Default 60.</description>
+</CustomField>

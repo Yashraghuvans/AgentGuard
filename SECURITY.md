@@ -44,7 +44,7 @@ In scope: anything in the enforcement path — gate bypass, fail-open behavior,
 CRUD/FLS circumvention, rollback boundary violation, audit suppression,
 policy-default weakening, package supply-chain issues.
 
-Out of scope (see [LIMITS.md](LIMITS.md)): semantic prompt-injection detection,
+Out of scope (see [LIMITS.md](/context/LIMITS.md)): semantic prompt-injection detection,
 Einstein Trust Layer functionality, identity/infrastructure controls (Dev Hub
 compromise, credential theft), long-term audit retention.
 

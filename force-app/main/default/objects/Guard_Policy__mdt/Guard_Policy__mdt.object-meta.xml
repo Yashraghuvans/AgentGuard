@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Declarative policy configuration for AgentGuard action wrapping. Each record defines schema, access, rate, and rollback constraints for a single invocable action.</description>
+    <label>Guard Policy</label>
+    <pluralLabel>Guard Policies</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>
