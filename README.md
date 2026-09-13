@@ -6,8 +6,6 @@
 
 Schema validation · CRUD/FLS enforcement · Rate limiting · Transactional rollback · Real-time audit
 
-[![CI](https://github.com/yashraghuvanshi/agentguard-sf/actions/workflows/ci.yml/badge.svg)](https://github.com/yashraghuvanshi/agentguard-sf/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/yashraghuvanshi/agentguard-sf/actions/workflows/codeql.yml/badge.svg)](https://github.com/yashraghuvanshi/agentguard-sf/actions/workflows/codeql.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Tests](https://img.shields.io/badge/tests-75%2F75%20passing-brightgreen)](docs/testing.md)
