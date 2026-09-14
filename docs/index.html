@@ -633,6 +633,7 @@
       .qs-step {
         background: var(--surface);
         padding: 20px;
+        min-width: 0;
       }
       .qs-step .idx {
         font-family: 'IBM Plex Mono', monospace;
@@ -651,7 +652,8 @@
         color: var(--code-text);
         padding: 8px 10px;
         overflow-x: auto;
-        white-space: pre;
+        white-space: pre-wrap;
+        word-break: break-word;
       }
 
       .integrate-grid {
