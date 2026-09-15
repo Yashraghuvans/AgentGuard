@@ -7,10 +7,15 @@
       "path": "force-app",
       "default": true,
       "package": "AgentGuardSF",
-      "versionName": "ver 0.1.0",
-      "versionNumber": "0.1.0.0",
-      "versionDescription": "Core gate: AgentGuard.wrap() facade, SchemaValidator, AccessGate, AuditPublisher, AgentGuard_Audit__e platform event",
-      "releaseNotesUrl": "https://github.com/yashraghuvanshi/agentguard-sf/blob/main/CHANGELOG.md"
+      "versionName": "ver 0.8.0",
+      "versionNumber": "0.8.0.NEXT",
+      "versionDescription": "v0.8.0: 83% test coverage, guardAuditDashboard LWC, sf agentguard CLI plugin. Production-ready with SchemaValidator, AccessGate, RateLimiter, RollbackGuard, and AuditPublisher.",
+      "releaseNotesUrl": "https://github.com/yashraghuvanshi/agentguard-sf/blob/main/CHANGELOG.md",
+      "definitionFile": "config/project-scratch-def.json"
     }
-  ]
+  ],
+  "packageAliases": {
+    "AgentGuardSF": "0Hofj0000004KhhCAE",
+    "AgentGuardSF@0.8.0-1": "04tfj000000XcL3AAK"
+  }
 }

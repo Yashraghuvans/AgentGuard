@@ -7,32 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added — v0.8.0 core gate + tooling
+
+- `AgentGuard.cls` — public `wrap()` / `wrapAndExecute()` facade with fail-closed boundary (ADR-002)
+- `SchemaValidator.cls` — schema contract validation of AI-originated payloads
+- `AccessGate.cls` — CRUD/FLS enforcement `WITH USER_MODE` against running user
+- `RateLimiter.cls` — Platform Cache sliding-window rate limiting, allow-and-log fallback on cache outage
+- `RollbackGuard.cls` — Savepoint boundary + max-records ceiling
+- `AuditPublisher.cls` — real-time `AgentGuard_Audit__e` Platform Event on every decision
+- `PolicyRegistry.cls` — name → `Guard_Policy__mdt` resolution; unknown names resolve to a
+  disabled (all-blocking) policy, never null
+- `GuardResult` / `GuardPolicy` — value models (see v0.1 notes below)
+- `guardAuditDashboard` LWC — real-time audit event monitor
+- `sf agentguard` CLI plugin — `audit tail` and `audit summary` commands
+- Tests: 116 tests across all gate, model, and flow classes, 100% pass rate,
+  83% test-run coverage / 77% org-wide coverage (last local run: 2026-09-14)
+
 ### Added — v0.1 value models (#5)
 
 - `GuardResult` — immutable decision value type (ALLOW/BLOCK/THROTTLED/ROLLBACK);
   non-blank reason enforced at construction for every non-ALLOW outcome.
 - `GuardPolicy` — restrictive-by-default policy model: disabled by default,
   zero record ceiling, zero rate budget, empty scoping sets.
-- `PolicyRegistry` — name → policy resolution; unknown names resolve to a
-  disabled (all-blocking) policy, never null. Live `Guard_Policy__mdt`
-  resolution lands with v0.6 (#13).
 - `TestDataFactory` — shared fixture factory for all test suites.
-- Tests: `GuardPolicyTest`, `GuardResultTest` (positive + negative paths).
 
-### Planned — v0.1 Core Gate
+### Added — package version 0.8.0.1 (beta)
 
-- `AgentGuard.cls` — public `wrap()` facade with fail-closed boundary (ADR-002)
-- `SchemaValidator.cls` — schema contract validation of AI-originated payloads
-- `AccessGate.cls` — CRUD/FLS enforcement `WITH USER_MODE` against running user
-- `AuditPublisher.cls` — real-time `AgentGuard_Audit__e` Platform Event on every decision
-- Unit tests: positive + negative + bulk paths per gate class
+- First `AgentGuardSF` unlocked package version cut: `04tfj000000XcL3AAK`
+  (`sf package install --package 04tfj000000XcL3AAK`), 83% code coverage,
+  passed the coverage check. Installable in sandboxes/scratch/dev orgs;
+  not yet promoted for production.
 
-### Planned — later milestones
+### Roadmap — v1.0
 
-- v0.3: `RateLimiter` (Platform Cache, sliding window), `RollbackGuard` (Savepoint + record ceiling)
-- v0.6: `Guard_Policy__mdt` declarative policy wiring
-- v0.8: `guardAuditDashboard` LWC, `sf agentguard` CLI plugin
-- v1.0: docs site, 2GP unlocked package, 90%+ coverage gate green in CI
+- Promote package version 0.8.0.1 (or a later cut) for production install
+- Publish `@agentguard/sf-agentguard` CLI plugin to npm (not yet published)
+- Docs site
+- 90%+ coverage gate green in CI (currently 83% test-run / 77% org-wide)
+- Org-level rate budgets (RL-008), nested schema validation (RL-007) — see
+  `docs/risk-register.md`
 
 ### Added (scaffolding)
 

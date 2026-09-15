@@ -8,7 +8,7 @@ Schema validation · CRUD/FLS enforcement · Rate limiting · Transactional roll
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Tests](https://img.shields.io/badge/tests-75%2F75%20passing-brightgreen)](docs/testing.md)
+[![Tests](https://img.shields.io/badge/tests-116%2F116%20passing-brightgreen)](docs/testing.md)
 
 [Overview](#overview) · [How It Works](#how-it-works) · [Quick Start](#quick-start) · [Deployment](#deployment) · [Threat Coverage](#threat-coverage) · [Documentation](#documentation) · [Security](#security-policy)
 
@@ -93,15 +93,25 @@ sf org create scratch --definition-file config/project-scratch-def.json --alias 
 # Deploy all metadata
 sf project deploy start --target-org agentguard-dev
 
-# Run the full test suite (75 tests, should all pass)
+# Run the full test suite (116 tests, should all pass)
 sf apex run test --target-org agentguard-dev --code-coverage --result-format human --wait 30
 ```
 
-### Option 2: Install Package (coming at v1.0)
+### Option 2: Install Package (beta)
 
 ```bash
-sf package install --package AgentGuardSF@<version> -o myOrgAlias
+sf package install --package 04tfj000000XcL3AAK --target-org myOrgAlias --wait 10
 ```
+
+Or via browser install link — production/Dev org: [login.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000XcL3AAK](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000XcL3AAK) · sandbox: [test.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000XcL3AAK](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000XcL3AAK)
+
+| Field              | Value                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Version            | `0.8.0.1`                                                                                                  |
+| Package Id         | `0Hofj0000004KhhCAE` (alias `AgentGuardSF`)                                                                |
+| Subscriber Version | `04tfj000000XcL3AAK`                                                                                       |
+| Code coverage      | 83% (passed coverage check)                                                                                |
+| Released           | No — beta, unlocked package. Installs fine in sandboxes/scratch/dev orgs; not yet promoted for production. |
 
 ---
 
