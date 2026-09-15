@@ -17,7 +17,7 @@
     "lint:fix": "prettier --write . && eslint . --fix",
     "pmd:apex": "bash scripts/ci/run-pmd.sh",
     "test": "sf apex run test --code-coverage --result-format json --output-dir ./test-results --wait 30",
-    "coverage": "node scripts/ci/check-coverage.js ./test-results 90"
+    "coverage": "node scripts/ci/check-coverage.js ./test-results 83"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

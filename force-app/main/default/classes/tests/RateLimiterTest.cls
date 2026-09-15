@@ -122,6 +122,84 @@ private class RateLimiterTest {
         }
     }
 
+    @isTest
+    static void given_realCacheMode_when_partitionNull_then_allowFlagged() {
+        System.runAs(ctxUser()) {
+            RateLimiter.disableTestCache = true;
+            try {
+                GuardPolicy policy = rateLimitedPolicy(5, 60);
+                GuardResult r = RateLimiter.checkLimit(policy, 'RealCacheTest');
+
+                // When partition is missing in real mode, it catches exception and returns allowFlagged
+                System.assertEquals(true, r.isAllowed, 'Partition null must allow (degraded mode)');
+                System.assertEquals(true, r.flagged, 'Must be flagged');
+                // Reason should contain one of the cache error indicators
+                System.assert(r.reason != null && r.reason.length() > 0, 'Reason must be present: ' + r.reason);
+            } finally {
+                RateLimiter.disableTestCache = false;
+            }
+        }
+    }
+
+    @isTest
+    static void given_realCacheClear_when_invoked_then_noException() {
+        System.runAs(ctxUser()) {
+            RateLimiter.disableTestCache = true;
+            try {
+                // Should not throw even if partition missing
+                RateLimiter.clearCache('ClearTestAction');
+                System.assert(true, 'clearCache must not throw');
+            } finally {
+                RateLimiter.disableTestCache = false;
+            }
+        }
+    }
+
+    @isTest
+    static void given_windowClampingMin_when_tooLow_then_clampsToMinimum() {
+        System.runAs(ctxUser()) {
+            GuardPolicy policy = rateLimitedPolicy(10, 5); // Below min 10
+            RateLimiter.clearCache('WindowMinTest');
+
+            GuardResult r = RateLimiter.checkLimit(policy, 'WindowMinTest');
+            System.assertEquals(true, r.isAllowed, 'First call must allow');
+            // Window is clamped by policy builder, test confirms no exception
+        }
+    }
+
+    @isTest
+    static void given_windowClampingMax_when_tooHigh_then_clampsToMaximum() {
+        System.runAs(ctxUser()) {
+            GuardPolicy policy = rateLimitedPolicy(10, 5000); // Above max 3600
+            RateLimiter.clearCache('WindowMaxTest');
+
+            GuardResult r = RateLimiter.checkLimit(policy, 'WindowMaxTest');
+            System.assertEquals(true, r.isAllowed, 'First call must allow');
+            // Window is clamped by policy builder, test confirms no exception
+        }
+    }
+
+    @isTest
+    static void given_nullRateLimitPerMinute_when_checked_then_blocks() {
+        System.runAs(ctxUser()) {
+            GuardPolicy policy = GuardPolicy.disabled('Test').withEnabled(true).withRateLimit(null);
+            GuardResult r = RateLimiter.checkLimit(policy, 'NullLimitTest');
+
+            System.assertEquals(false, r.isAllowed, 'Null rate limit must block');
+            System.assert(r.reason.contains('not configured'), 'Reason must indicate misconfiguration');
+        }
+    }
+
+    @isTest
+    static void given_negativeRateLimit_when_checked_then_blocks() {
+        System.runAs(ctxUser()) {
+            GuardPolicy policy = GuardPolicy.disabled('Test').withEnabled(true).withRateLimit(-5);
+            GuardResult r = RateLimiter.checkLimit(policy, 'NegLimitTest');
+
+            System.assertEquals(false, r.isAllowed, 'Negative rate limit must block');
+        }
+    }
+
     private static User ctxUser() {
         return [SELECT Id FROM User WHERE Alias = 'agrat' LIMIT 1];
     }

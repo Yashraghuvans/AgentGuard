@@ -197,6 +197,33 @@ private class AgentGuardTest {
     }
 
     @isTest
+    static void given_nullPayload_when_wrapped_then_blocksGracefully() {
+        System.runAs(ctxUser()) {
+            TestDataFactory.registerPolicy(fullPolicy());
+            RateLimiter.clearCache('UpdateAccountTerritory');
+
+            GuardResult r = AgentGuard.wrap('UpdateAccountTerritory', null);
+
+            System.assertEquals(false, r.isAllowed, 'Null payload must block');
+            System.assert(
+                r.gateName == 'SCHEMA' || r.gateName == 'FACADE',
+                'Must block at SCHEMA or FACADE gate, got: ' + r.gateName
+            );
+        }
+    }
+
+    @isTest
+    static void given_blockedException_when_constructed_then_hasDecision() {
+        try {
+            throw new AgentGuard.BlockedException('Test reason', 'BLOCK', 'TEST_GATE');
+        } catch (AgentGuard.BlockedException e) {
+            System.assertEquals('Test reason', e.getMessage(), 'Message must match');
+            System.assertEquals('BLOCK', e.decision, 'Decision must match');
+            System.assertEquals('TEST_GATE', e.gateName, 'Gate name must match');
+        }
+    }
+
+    @isTest
     static void given_blockedCall_when_wrapped_then_auditEventIsBlocked() {
         System.runAs(ctxUser()) {
             RateLimiter.clearCache('AuditBlockTest');
@@ -234,6 +261,63 @@ private class AgentGuardTest {
             }
             System.assertEquals(1, blockedCount, 'Exactly one blocked event');
             AuditPublisher.setCaptureMode(false);
+        }
+    }
+
+    @isTest
+    static void given_facadeExceptionCaught_when_wrapped_then_blocksAndAudits() {
+        System.runAs(ctxUser()) {
+            RateLimiter.clearCache('FacadeExceptionTest');
+
+            // Register a policy that will pass initial validation but cause trouble downstream
+            GuardPolicy badPolicy = GuardPolicy.disabled('FacadeExceptionTest')
+                .withEnabled(true)
+                .withRateLimit(10)
+                .withSchemaContract('{"properties":{"AccountId":{"type":"string"}}}')
+                .withMaxRecordsPerCall(100)
+                .withSObjectType('Account')
+                .withOperation(GuardPolicy.Operation.MODIFY);
+            TestDataFactory.registerPolicy(badPolicy);
+
+            AuditPublisher.setCaptureMode(true);
+
+            // Pass malformed JSON that might cause issues
+            GuardResult r = AgentGuard.wrap('FacadeExceptionTest', '{invalid json');
+
+            // Must not throw — must return BLOCK instead
+            System.assertEquals(false, r.isAllowed, 'Exception in facade must return BLOCK, not throw');
+            System.assert(
+                r.gateName == 'SCHEMA' || r.gateName == 'FACADE',
+                'Must block at SCHEMA or FACADE gate after exception'
+            );
+
+            List<AgentGuard_Audit__e> events = AuditPublisher.getCapturedEvents();
+            System.assert(events.size() > 0, 'Exception must still publish audit event');
+            AuditPublisher.setCaptureMode(false);
+        }
+    }
+
+    @isTest
+    static void given_rollbackMethod_when_invoked_then_delegatesToRollbackGuard() {
+        System.runAs(ctxUser()) {
+            String contract = '{"properties": {"AccountId": {"type": "string", "required": true}, "Territory__c": {"type": "string"}}, "required": ["AccountId"]}';
+            GuardPolicy policy = GuardPolicy.disabled('RollbackDirectTest')
+                .withEnabled(true)
+                .withSObjectType('Account')
+                .withOperation(GuardPolicy.Operation.MODIFY)
+                .withSchemaContract(contract)
+                .withMaxRecordsPerCall(5)
+                .withRateLimit(10)
+                .withRateLimitWindowSeconds(60);
+            TestDataFactory.registerPolicy(policy);
+            RateLimiter.clearCache('RollbackDirectTest');
+            String payload = '{"AccountId": "001", "Territory__c": "West"}';
+
+            GuardResult allowed = AgentGuard.wrap('RollbackDirectTest', payload);
+            System.assertEquals(true, allowed.isAllowed, 'Initial call must be allowed');
+
+            GuardResult rolled = AgentGuard.rollback(allowed);
+            System.assertEquals('ROLLBACK', rolled.decision, 'Must return ROLLBACK decision');
         }
     }
 

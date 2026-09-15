@@ -110,6 +110,45 @@ private class GuardResultTest {
         }
     }
 
+    @isTest
+    static void given_threeParamBlock_when_built_then_actionMatchesPolicy() {
+        System.runAs(ctxUser()) {
+            GuardResult r = GuardResult.block('SCHEMA', 'TestPolicy', 'missing required field');
+
+            System.assertEquals(false, r.isAllowed, '3-param block must not allow');
+            System.assertEquals('BLOCK', r.decision, 'Decision must be BLOCK');
+            System.assertEquals('TestPolicy', r.policyName, 'Policy name must match');
+            System.assertEquals('TestPolicy', r.actionName, 'Action must default to policy name');
+            System.assertEquals('SCHEMA', r.gateName, 'Gate name must be preserved');
+        }
+    }
+
+    @isTest
+    static void given_blankReasonOnRollback_when_built_then_throws() {
+        System.runAs(ctxUser()) {
+            Boolean threw = false;
+            try {
+                GuardResult.rolledBack('X', 'X', '');
+            } catch (IllegalArgumentException e) {
+                threw = true;
+            }
+            System.assertEquals(true, threw, 'ROLLBACK requires a reason');
+        }
+    }
+
+    @isTest
+    static void given_blankReasonOnAllowFlagged_when_built_then_throws() {
+        System.runAs(ctxUser()) {
+            Boolean threw = false;
+            try {
+                GuardResult.allowFlagged('X', 'X', null);
+            } catch (IllegalArgumentException e) {
+                threw = true;
+            }
+            System.assertEquals(true, threw, 'ALLOW_FLAGGED requires a reason');
+        }
+    }
+
     private static User ctxUser() {
         return [SELECT Id FROM User WHERE Alias = 'agres' LIMIT 1];
     }

@@ -169,12 +169,92 @@ private class AccessGateTest {
     }
 
     @isTest
+    static void given_nullPayloadDeserialized_when_evaluated_then_blocks() {
+        System.runAs(ctxUser()) {
+            // This tests the null check after JSON.deserializeUntyped
+            GuardResult r = AccessGate.evaluate(modAccountPolicy(), 'null');
+
+            System.assertEquals(false, r.isAllowed, 'Null deserialized payload must block');
+            System.assertEquals('ACCESS', r.gateName, 'Must be ACCESS gate');
+            System.assert(r.reason.contains('deserialized to null'), 'Reason must explain null payload');
+        }
+    }
+
+    @isTest
+    static void given_arrayPayload_when_evaluated_then_validatesEach() {
+        System.runAs(ctxUser()) {
+            String payload = '[{"Id": "001000000000001", "Name": "Acc1"}, {"Id": "001000000000002", "Name": "Acc2"}]';
+            GuardResult r = AccessGate.evaluate(modAccountPolicy(), payload);
+
+            System.assertEquals(true, r.isAllowed, 'Valid array payload must allow');
+        }
+    }
+
+    @isTest
+    static void given_nonObjectNonArrayPayload_when_evaluated_then_blocks() {
+        System.runAs(ctxUser()) {
+            // Payload is a primitive, not object or array
+            GuardResult r = AccessGate.evaluate(modAccountPolicy(), '"just a string"');
+
+            System.assertEquals(false, r.isAllowed, 'Non-object/array payload must block');
+            System.assert(
+                r.reason.contains('must be an object or array'),
+                'Reason must explain payload type issue: ' + r.reason
+            );
+        }
+    }
+
+    @isTest
+    static void given_removeOperationDeletable_when_userHasAccess_then_allows() {
+        System.runAs(ctxUser()) {
+            GuardPolicy policy = GuardPolicy.disabled('DeleteTask')
+                .withEnabled(true)
+                .withSObjectType('Task')
+                .withOperation(GuardPolicy.Operation.REMOVE);
+
+            String payload = '{"Id": "00T000000000001"}';
+            GuardResult r = AccessGate.evaluate(policy, payload);
+
+            // Admin can delete Task
+            System.assertEquals(true, r.isAllowed, 'Admin must be allowed to delete Task');
+        }
+    }
+
+    @isTest
     static void given_invalidPayloadJson_when_evaluated_then_blocks() {
         System.runAs(ctxUser()) {
             GuardResult r = AccessGate.evaluate(modAccountPolicy(), 'not valid json');
 
             System.assertEquals(false, r.isAllowed, 'Invalid JSON must block');
             System.assertEquals('ACCESS', r.gateName, 'Must be ACCESS gate');
+        }
+    }
+
+    @isTest
+    static void given_readOperation_when_evaluated_then_checksReadableAccess() {
+        System.runAs(ctxUser()) {
+            GuardPolicy policy = GuardPolicy.disabled('ReadAccount')
+                .withEnabled(true)
+                .withSObjectType('Account')
+                .withOperation(GuardPolicy.Operation.READ);
+
+            String payload = '{"Id": "001000000000001", "Name": "Test"}';
+            GuardResult r = AccessGate.evaluate(policy, payload);
+
+            // Admin has read access to Account
+            System.assertEquals(true, r.isAllowed, 'Admin must be allowed to read Account');
+        }
+    }
+
+    @isTest
+    static void given_arrayWithNonObjectElement_when_evaluated_then_skipsNonObjects() {
+        System.runAs(ctxUser()) {
+            // Array containing a non-object element (will be skipped in the instanceof check)
+            String payload = '[{"Id": "001"}, "not an object"]';
+            GuardResult r = AccessGate.evaluate(modAccountPolicy(), payload);
+
+            // Should process the valid object and skip the string
+            System.assertEquals(true, r.isAllowed, 'Must skip non-object elements in array');
         }
     }
 
