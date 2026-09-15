@@ -15,3 +15,4 @@ config/
 .husky/
 **/jsconfig.json
 **/.eslintrc.json
+**/__tests__/

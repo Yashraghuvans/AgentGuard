@@ -1,0 +1,143 @@
+/* Decision color scheme */
+.decision-allow {
+  color: #2e844a;
+  background-color: #ecfaec;
+  border-left: 4px solid #2e844a;
+}
+
+.decision-block {
+  color: #c23934;
+  background-color: #feded8;
+  border-left: 4px solid #c23934;
+}
+
+.decision-throttled {
+  color: #dd7a01;
+  background-color: #fef7ec;
+  border-left: 4px solid #dd7a01;
+}
+
+.decision-rollback {
+  color: #e07c00;
+  background-color: #fff4e6;
+  border-left: 4px solid #e07c00;
+}
+
+/* Stat cards */
+.stat-card {
+  padding: 1rem;
+  border-radius: 0.25rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}
+
+/* Events container */
+.events-container {
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid #dddbda;
+  border-radius: 0.25rem;
+}
+
+/* Event cards */
+.event-card {
+  padding: 0.75rem;
+  border-bottom: 1px solid #dddbda;
+  background-color: #ffffff;
+}
+
+.event-card:last-child {
+  border-bottom: none;
+}
+
+.event-card:hover {
+  background-color: #f3f2f2;
+}
+
+/* Event header */
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.event-timestamp {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #706e6b;
+}
+
+/* Event details */
+.event-details {
+  padding-left: 0.5rem;
+}
+
+.detail-row {
+  display: flex;
+  padding: 0.25rem 0;
+  font-size: 0.875rem;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #3e3e3c;
+  min-width: 110px;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  color: #080707;
+  word-break: break-word;
+}
+
+.detail-hash {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #706e6b;
+}
+
+/* Flagged badge */
+.flagged-badge {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #fef7ec;
+  border-radius: 0.25rem;
+  color: #dd7a01;
+  font-weight: 600;
+  font-size: 0.75rem;
+  align-items: center;
+}
+
+/* Status indicators */
+.slds-text-color_success {
+  color: #2e844a;
+  font-weight: 600;
+}
+
+.slds-text-color_error {
+  color: #c23934;
+  font-weight: 600;
+}
+
+.slds-text-color_weak {
+  color: #706e6b;
+  font-weight: 600;
+}

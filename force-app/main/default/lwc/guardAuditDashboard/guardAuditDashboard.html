@@ -1,0 +1,106 @@
+<template>
+  <lightning-card title="AgentGuard Audit Monitor" icon-name="standard:product_required">
+    <!-- Status Banner -->
+    <div class="slds-p-horizontal_medium slds-p-top_small">
+      <div class="{statusClass}">
+        <lightning-icon icon-name="{statusIcon}" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+        {statusMessage}
+      </div>
+    </div>
+
+    <!-- Decision Counts -->
+    <div class="slds-p-around_medium">
+      <h3 class="slds-text-heading_small slds-m-bottom_small">Decision Summary</h3>
+      <div class="slds-grid slds-wrap slds-gutters_small">
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+          <div class="stat-card decision-allow">
+            <div class="stat-value">{decisionCounts.ALLOW}</div>
+            <div class="stat-label">ALLOW</div>
+          </div>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+          <div class="stat-card decision-block">
+            <div class="stat-value">{decisionCounts.BLOCK}</div>
+            <div class="stat-label">BLOCK</div>
+          </div>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+          <div class="stat-card decision-throttled">
+            <div class="stat-value">{decisionCounts.THROTTLED}</div>
+            <div class="stat-label">THROTTLED</div>
+          </div>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+          <div class="stat-card decision-rollback">
+            <div class="stat-value">{decisionCounts.ROLLBACK}</div>
+            <div class="stat-label">ROLLBACK</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Events Feed -->
+    <div class="slds-p-around_medium">
+      <h3 class="slds-text-heading_small slds-m-bottom_small">Recent Events (Last {recentEvents.length})</h3>
+
+      <template if:true="{hasEvents}">
+        <div class="events-container">
+          <template for:each="{recentEvents}" for:item="event">
+            <div key="{event.id}" class="event-card">
+              <div class="{event.decisionClass}">
+                <div class="event-header">
+                  <span>{event.decision}</span>
+                  <span class="event-timestamp">{event.timestamp}</span>
+                </div>
+              </div>
+              <div class="event-details">
+                <div class="detail-row">
+                  <span class="detail-label">Action:</span>
+                  <span class="detail-value">{event.actionName}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Policy:</span>
+                  <span class="detail-value">{event.policyName}</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Gate:</span>
+                  <span class="detail-value">{event.gateName}</span>
+                </div>
+                <template if:true="{event.reason}">
+                  <div class="detail-row">
+                    <span class="detail-label">Reason:</span>
+                    <span class="detail-value">{event.reason}</span>
+                  </div>
+                </template>
+                <div class="detail-row">
+                  <span class="detail-label">Latency:</span>
+                  <span class="detail-value">{event.latencyMs}ms</span>
+                </div>
+                <div class="detail-row">
+                  <span class="detail-label">Payload Hash:</span>
+                  <span class="detail-value detail-hash">{event.payloadHash}</span>
+                </div>
+                <template if:true="{event.flagged}">
+                  <div class="detail-row flagged-badge">
+                    <lightning-icon
+                      icon-name="utility:warning"
+                      size="xx-small"
+                      class="slds-m-right_xx-small"
+                    ></lightning-icon>
+                    Flagged for Review
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <template if:false="{hasEvents}">
+        <div class="slds-text-align_center slds-p-vertical_large slds-text-color_weak">
+          No audit events received yet. Events will appear here in real-time.
+        </div>
+      </template>
+    </div>
+  </lightning-card>
+</template>
