@@ -225,6 +225,48 @@ Honest scope boundaries ([LIMITS.md](/context/LIMITS.md)):
 
 ---
 
+## CLI Plugin
+
+The `sf agentguard` CLI plugin lets you monitor audit events from the terminal during development and spot-checks.
+
+### Installation
+
+```bash
+sf plugins install @agentguard/sf-agentguard
+```
+
+### Commands
+
+**Stream events in real-time:**
+
+```bash
+# Tail all events
+sf agentguard audit tail --target-org myorg
+
+# Filter by decision
+sf agentguard audit tail --target-org myorg --decision BLOCK
+
+# Show only flagged events
+sf agentguard audit tail --target-org myorg --flagged
+```
+
+**Collect and summarize:**
+
+```bash
+# Collect for 60 seconds and show statistics
+sf agentguard audit summary --target-org myorg
+
+# Custom duration
+sf agentguard audit summary --target-org myorg --duration 300
+
+# JSON output for automation
+sf agentguard audit summary --target-org myorg --json
+```
+
+Full plugin documentation: [plugins/sf-agentguard/README.md](plugins/sf-agentguard/README.md).
+
+---
+
 ## Documentation
 
 | Document                                             | Contents                                            |

@@ -1,0 +1,55 @@
+{
+  "name": "@agentguard/sf-agentguard",
+  "version": "0.1.0",
+  "description": "Salesforce CLI plugin for AgentGuard audit event monitoring",
+  "author": "AgentGuard Contributors",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "/dist",
+    "/messages",
+    "/oclif.manifest.json"
+  ],
+  "keywords": [
+    "salesforce",
+    "sf-plugin",
+    "agentguard",
+    "audit",
+    "ai-agents"
+  ],
+  "oclif": {
+    "bin": "sf",
+    "devPlugins": [
+      "@oclif/plugin-help"
+    ],
+    "topicSeparator": " ",
+    "topics": {
+      "agentguard": {
+        "description": "Monitor AgentGuard audit events"
+      },
+      "agentguard:audit": {
+        "description": "Tail and summarize audit events"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rm -rf dist",
+    "prepack": "npm run build",
+    "test": "echo 'No tests yet' && exit 0"
+  },
+  "dependencies": {
+    "@oclif/core": "^4.0.0",
+    "@salesforce/core": "^8.0.0",
+    "@salesforce/sf-plugins-core": "^12.0.0",
+    "chalk": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -8,6 +8,7 @@ docs/
 examples/
 scripts/
 config/
+plugins/
 *.md
 *.docx
 .eslint*

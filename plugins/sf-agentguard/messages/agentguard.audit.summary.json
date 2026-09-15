@@ -1,0 +1,9 @@
+{
+  "summary": "Collect and summarize AgentGuard audit events",
+  "description": "Listen to AgentGuard_Audit__e Platform Events for a specified duration and provide a statistical summary. Shows total event count, decision breakdown with percentages, top policies, gate activity, flagged event count, and average latency. Useful for spot-checking guard effectiveness and identifying patterns.",
+  "examples": [
+    "Collect events for 60 seconds (default):\n<%= config.bin %> <%= command.id %> --target-org myorg",
+    "Collect for 5 minutes:\n<%= config.bin %> <%= command.id %> --target-org myorg --duration 300",
+    "Output as JSON for automation:\n<%= config.bin %> <%= command.id %> --target-org myorg --json"
+  ]
+}

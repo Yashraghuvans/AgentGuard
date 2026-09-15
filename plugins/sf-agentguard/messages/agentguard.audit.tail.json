@@ -1,0 +1,10 @@
+{
+  "summary": "Stream AgentGuard audit events in real-time",
+  "description": "Subscribe to the AgentGuard_Audit__e Platform Event and display events as they occur. Events show decision (ALLOW/BLOCK/THROTTLED/ROLLBACK), action name, policy, gate, reason, and latency. Use filters to focus on specific decisions, policies, or flagged events. Press Ctrl+C to stop streaming.",
+  "examples": [
+    "Stream all audit events:\n<%= config.bin %> <%= command.id %> --target-org myorg",
+    "Show only BLOCK decisions:\n<%= config.bin %> <%= command.id %> --target-org myorg --decision BLOCK",
+    "Show events from a specific policy:\n<%= config.bin %> <%= command.id %> --target-org myorg --policy StrictPolicy",
+    "Show only flagged events:\n<%= config.bin %> <%= command.id %> --target-org myorg --flagged"
+  ]
+}
