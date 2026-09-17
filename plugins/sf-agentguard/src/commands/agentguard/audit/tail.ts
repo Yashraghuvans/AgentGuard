@@ -40,7 +40,25 @@ export default class AuditTail extends SfCommand<void> {
     this.log(chalk.gray(`Streaming from: ${flags['target-org'].getUsername()}`));
     this.log(chalk.gray('Press Ctrl+C to stop\n'));
 
+    this.guardAgainstTransportRejections();
     await this.streamEvents(conn, flags);
+  }
+
+  /**
+   * jsforce's CometD transport (faye) can reject internal retry/advice
+   * promises with no reason during normal long-poll cycling — Node treats
+   * an unhandled rejection as fatal by default, which would otherwise kill
+   * a long-running tail command over a routine transport hiccup. Log once
+   * and keep listening; faye reconnects on its own.
+   */
+  private guardAgainstTransportRejections(): void {
+    let warned = false;
+    process.on('unhandledRejection', () => {
+      if (!warned) {
+        warned = true;
+        this.warn('Streaming transport reported a transient error; still listening (Ctrl+C to stop).');
+      }
+    });
   }
 
   private async streamEvents(
@@ -50,22 +68,27 @@ export default class AuditTail extends SfCommand<void> {
     const channel = '/event/AgentGuard_Audit__e';
 
     // Subscribe to Platform Event
-    conn.streaming.topic(channel).subscribe((message: any) => {
-      const event = message.payload;
+    try {
+      await conn.streaming.topic(channel).subscribe((message: any) => {
+        const event = message.payload;
 
-      // Apply filters
-      if (flags.decision && event.Decision__c !== flags.decision) {
-        return;
-      }
-      if (flags.policy && event.PolicyName__c !== flags.policy) {
-        return;
-      }
-      if (flags.flagged && !event.Flagged__c) {
-        return;
-      }
+        // Apply filters
+        if (flags.decision && event.Decision__c !== flags.decision) {
+          return;
+        }
+        if (flags.policy && event.PolicyName__c !== flags.policy) {
+          return;
+        }
+        if (flags.flagged && !event.Flagged__c) {
+          return;
+        }
 
-      this.printEvent(event);
-    });
+        this.printEvent(event);
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.error(`Failed to subscribe to ${channel}: ${message}`);
+    }
 
     // Keep the process alive
     await new Promise(() => {

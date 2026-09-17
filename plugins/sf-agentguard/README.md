@@ -4,6 +4,18 @@ Salesforce CLI plugin for monitoring AgentGuard audit events.
 
 ## Installation
 
+Not yet published to npm. Build and link it locally from a clone of the repo:
+
+```bash
+cd plugins/sf-agentguard
+npm install
+npm run build
+cd ../..
+sf plugins link plugins/sf-agentguard
+```
+
+Once published, installation will be:
+
 ```bash
 sf plugins install @agentguard/sf-agentguard
 ```
@@ -77,17 +89,7 @@ sf agentguard audit summary --target-org myorg --json
 
 ## Development
 
-### Build
-
-```bash
-npm run build
-```
-
-### Link for local testing
-
-```bash
-sf plugins link
-```
+From this directory (`plugins/sf-agentguard`): `npm run build` recompiles after a source change, `npm run clean` removes `dist/`. The `sf plugins link plugins/sf-agentguard` step in [Installation](#installation) only needs to run once — `sf` picks up a rebuild automatically on the next command invocation.
 
 ## Architecture
 

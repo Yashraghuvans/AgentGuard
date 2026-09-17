@@ -25,7 +25,7 @@ sf org create scratch --definition-file config/project-scratch-def.json \
 # Deploy all metadata
 sf project deploy start --target-org agentguard-dev
 
-# Run the full test suite (116 tests, should all pass)
+# Run the full test suite (117 tests, should all pass)
 sf apex run test --target-org agentguard-dev --code-coverage --result-format human --wait 30
 ```
 
@@ -129,7 +129,10 @@ Platform Events aren't queryable via SOQL, so pick one of these instead of `[SEL
 - **Terminal:** install the CLI plugin and tail the stream live:
 
   ```bash
-  sf plugins install @agentguard/sf-agentguard
+  # Not yet published to npm — build and link it locally:
+  cd plugins/sf-agentguard && npm install && npm run build && cd ../..
+  sf plugins link plugins/sf-agentguard
+
   sf agentguard audit tail --target-org agentguard-dev
   ```
 

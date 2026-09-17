@@ -4,10 +4,9 @@
 
 **An open-source Apex security firewall between AI agents and Salesforce data.**
 
-[![Tests](https://img.shields.io/badge/tests-116%2F116%20passing-brightgreen)](docs/testing.md)
+[![Tests](https://img.shields.io/badge/tests-117%2F117%20passing-brightgreen)](docs/testing.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-
 
 [Demo](#demo-video) · [Overview](#overview--problem-statement) · [Features](#key-features) · [Architecture](#architecture--how-it-works) · [Installation](#installation--setup) · [Configuration](#configuration--usage-examples) · [Testing](#testing--code-coverage)
 
@@ -110,7 +109,7 @@ Monitor decisions from a terminal with the CLI plugin: `sf agentguard audit tail
 
 ## Testing & Code Coverage
 
-AgentGuard SF ships 116 automated tests covering every gate's ALLOW and BLOCK paths — an ALLOW-only suite isn't acceptable for a security tool, so every gate has at least one negative test proving it correctly blocks a bad payload.
+AgentGuard SF ships 117 automated tests covering every gate's ALLOW and BLOCK paths — an ALLOW-only suite isn't acceptable for a security tool, so every gate has at least one negative test proving it correctly blocks a bad payload.
 
 ```bash
 sf apex run test --target-org agentguard-dev --code-coverage --result-format human --wait 30
@@ -118,7 +117,7 @@ sf apex run test --target-org agentguard-dev --code-coverage --result-format hum
 
 | Metric            | Value                      |
 | ----------------- | -------------------------- |
-| Tests             | 116/116 passing            |
+| Tests             | 117/117 passing            |
 | Org-wide coverage | 75% (meets deploy minimum) |
 | Packaged coverage | 83%                        |
 

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `AgentGuard.cls` — the `wrap()` success path hardcoded `flagged=false` and a
+  fixed `'ALLOWED_BY_POLICY'` reason on both the returned `GuardResult` and
+  the published audit event, silently discarding `RateLimiter`'s degraded-mode
+  signal whenever a call succeeded via its fail-open (cache-unavailable)
+  path. A call made during a cache outage looked identical to a normal
+  ALLOW on the dashboard and in the CLI — exactly the silent-fail-open the
+  gate was designed to avoid. Now propagates `RateLimiter`'s `flagged` state
+  and reason through to both. Added a regression test
+  (`AgentGuardTest.given_rateLimiterFlaggedAllow_when_wrapped_then_finalResultCarriesFlag`),
+  bringing the suite from 116 to 117 tests.
+- `sf agentguard` CLI plugin — never actually compiled prior to this fix.
+  `tsconfig.json` targeted `commonjs` while the source used `import.meta.url`
+  (ESM-only), and `package.json`'s `oclif.commands` field was missing
+  entirely, so oclif linked the plugin but registered zero commands even
+  when pointed at it directly. Also hardened `audit tail` / `audit summary`
+  against an upstream jsforce/faye transport quirk that periodically
+  rejected an internal long-poll retry promise with no reason — under
+  Node's default unhandled-rejection-is-fatal behavior, that crashed the
+  process mid-stream. Verified live against a scratch org: both commands
+  now build, link, subscribe, and correctly display/aggregate real
+  `AgentGuard_Audit__e` events without crashing.
+
 ### Added — v0.8.0 core gate + tooling
 
 - `AgentGuard.cls` — public `wrap()` / `wrapAndExecute()` facade with fail-closed boundary (ADR-002)
