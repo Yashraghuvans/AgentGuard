@@ -4,21 +4,14 @@
 
 **An open-source Apex security firewall between AI agents and Salesforce data.**
 
-Schema validation &nbsp;·&nbsp; CRUD/FLS enforcement &nbsp;·&nbsp; Rate limiting &nbsp;·&nbsp; Transactional rollback &nbsp;·&nbsp; Real-time audit
-
-[![CI](https://github.com/yashraghuvanshi/agentguard-sf/actions/workflows/ci.yml/badge.svg)](https://github.com/yashraghuvanshi/agentguard-sf/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/yashraghuvanshi/agentguard-sf/actions/workflows/codeql.yml/badge.svg)](https://github.com/yashraghuvanshi/agentguard-sf/actions/workflows/codeql.yml)
 [![Tests](https://img.shields.io/badge/tests-116%2F116%20passing-brightgreen)](docs/testing.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
+
 [Demo](#demo-video) · [Overview](#overview--problem-statement) · [Features](#key-features) · [Architecture](#architecture--how-it-works) · [Installation](#installation--setup) · [Configuration](#configuration--usage-examples) · [Testing](#testing--code-coverage)
 
 </div>
-
----
-
-## Demo Video
 
 <div align="center">
 
