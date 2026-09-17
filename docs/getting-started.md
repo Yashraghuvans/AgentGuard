@@ -1,108 +1,139 @@
 # Getting Started
 
-> **Status:** Full content available at v1.0. This page follows the blueprint's 5-minute quickstart contract.
+This is the code-heavy companion to the [README](../README.md): every command and code sample needed to deploy AgentGuard, wrap your first action, and watch it enforce — in one place.
 
 ## Prerequisites
 
-- Salesforce CLI (`sf`) v2.x or later
-- A Dev Hub org with 2GP packaging enabled
-- Platform Cache partition named `AgentGuard` (see [Configuration Requirements](../CONFIG_REQUIREMENTS.md))
-- Enterprise Edition, Developer Edition, or Scratch Org
+| Requirement                  | Notes                                                              |
+| ---------------------------- | ------------------------------------------------------------------ |
+| Salesforce DX CLI (`sf`) v2+ | `npm install -g @salesforce/cli`                                   |
+| Dev Hub org                  | Enterprise, Performance, or Unlimited Edition with Dev Hub enabled |
+| API version 62.0+            | Set in `sfdx-project.json`                                         |
 
-## Quick Install (5 minutes)
+## 1. Deploy
 
-### 1. Install the Package
-
-```bash
-sf package install --package AgentGuardSF@1.0.0-1 -o myScratchOrg
-```
-
-### 2. Deploy Example Policy
+### Option A — from source (recommended for trying it out)
 
 ```bash
-sf project deploy start -d examples/basic-invocable-wrap
+# Authenticate to your Dev Hub
+sf org login web --set-default-dev-hub --alias devhub
+
+# Create a scratch org
+sf org create scratch --definition-file config/project-scratch-def.json \
+  --alias agentguard-dev --duration-days 30 --set-default
+
+# Deploy all metadata
+sf project deploy start --target-org agentguard-dev
+
+# Run the full test suite (116 tests, should all pass)
+sf apex run test --target-org agentguard-dev --code-coverage --result-format human --wait 30
 ```
 
-### 3. Wrap Your First Action
+### Option B — install the beta package
+
+```bash
+sf package install --package 04tfj000000XcL3AAK --target-org myOrgAlias --wait 10
+```
+
+Or via browser install link — production/Dev org: [login.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000XcL3AAK](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000XcL3AAK) · sandbox: [test.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000XcL3AAK](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tfj000000XcL3AAK)
+
+| Field              | Value                                                                                                      |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Version            | `0.8.0.1`                                                                                                  |
+| Package Id         | `0Hofj0000004KhhCAE` (alias `AgentGuardSF`)                                                                |
+| Subscriber Version | `04tfj000000XcL3AAK`                                                                                       |
+| Code coverage      | 83% (passed coverage check)                                                                                |
+| Released           | No — beta, unlocked package. Installs fine in sandboxes/scratch/dev orgs; not yet promoted for production. |
+
+## 2. Create the Platform Cache partition (required for rate limiting)
+
+1. Go to **Setup > Platform Cache**
+2. Click **New Platform Cache Partition**
+3. Set the name to **`AgentGuard`**
+4. Allocate at least 1 MB of org cache
+5. Save
+
+Without this partition, `RateLimiter` operates in fail-open mode: it logs a flagged audit event but allows the call, rather than blocking every agent action because a cache dependency is unavailable.
+
+## 3. Wrap your first action
+
+Wrapping an existing `@InvocableMethod` requires one check before your business logic runs:
 
 ```apex
 @InvocableMethod(label='Update Account Territory')
 public static List<Result> execute(List<Request> requests) {
-    GuardResult check = AgentGuard.wrap('UpdateAccountTerritory', JSON.serialize(requests));
-    if (!check.isAllowed) throw new AgentGuard.BlockedException(check.reason);
+
+    GuardResult check = AgentGuard.wrap(
+        'UpdateAccountTerritory',   // matches Guard_Policy__mdt DeveloperName
+        JSON.serialize(requests)    // raw AI-originated payload
+    );
+
+    if (!check.isAllowed) {
+        throw new AgentGuard.BlockedException(check.reason, check.decision, check.gateName);
+    }
+
+    // Existing logic runs unchanged — validated, access-checked,
+    // throttled, inside a Savepoint boundary, and audited.
     return TerritoryService.reassign(requests);
 }
 ```
 
-### 4. Watch Your First Blocked Call
-
-```bash
-sf agentguard audit tail   # Optional CLI plugin, ships at v0.8
-```
-
-## Detailed Walkthrough
-
-### Step 1: Create Platform Cache Partition
-
-Before installing, ensure your org has a Platform Cache partition named `AgentGuard`:
-
-1. In Setup, search for **Platform Cache**
-2. Click **New Platform Cache Partition**
-3. Name: `AgentGuard`
-4. Type: `Org Cache`
-5. Session Cache: `0 MB` (not used)
-6. Org Cache: `10 MB` (minimum recommended)
-7. Default Partition: **No** (keep as non-default)
-
-### Step 2: Deploy Guard Policy Metadata
-
-The example includes a `Guard_Policy__mdt` record for `UpdateAccountTerritory`. Deploy it:
-
-```bash
-sf project deploy start -d examples/basic-invocable-wrap
-```
-
-This creates a policy with:
-
-- **Schema Contract**: Requires `AccountId` (string), optional `Territory__c`
-- **Max Records**: 5 per call
-- **Rate Limit**: 10 calls/minute per user
-- **Operation**: MODIFY (enforces update FLS)
-
-### Step 3: Test the Integration
-
-Open Anonymous Apex in Developer Console and run:
+For automatic rollback when business logic throws, use `wrapAndExecute` instead of a manual `wrap` + `throw`:
 
 ```apex
-// This will be ALLOWED
-List<TerritoryService.Request> reqs = new List<TerritoryService.Request>{
-    new TerritoryService.Request('001...', 'West')
-};
-TerritoryService.execute(reqs);
+GuardResult result = AgentGuard.wrapAndExecute(
+    'UpdateAccountTerritory',
+    JSON.serialize(requests),
+    new MyCallback()
+);
 
-// This will be BLOCKED (unknown field)
-List<TerritoryService.Request> badReqs = new List<TerritoryService.Request>{
-    new TerritoryService.Request('001...', 'West', 'HACKED__c')
-};
-try {
-    TerritoryService.execute(badReqs);
-} catch (AgentGuard.BlockedException e) {
-    System.debug('BLOCKED: ' + e.getMessage());
+private class MyCallback implements RollbackGuard.GuardResultCallback {
+    public GuardResult execute(GuardResult allow) {
+        // your DML here — rolled back automatically if this throws
+        return TerritoryService.reassign(requests);
+    }
 }
 ```
 
-### Step 4: Verify Audit Event
+The policy referenced by name (`UpdateAccountTerritory` above) must exist as a `Guard_Policy__mdt` record — see [Policy Configuration](policy-configuration.md) for the full field reference and schema contract format. The worked example in `examples/basic-invocable-wrap` ships a ready-made one.
 
-Check the Platform Event stream:
+## 4. Try a blocked call
+
+Deploy the worked example, then run this in Developer Console → Execute Anonymous:
 
 ```apex
-List<AgentGuard_Audit__e> events = [SELECT Decision__c, Reason__c, GateName__c
-    FROM AgentGuard_Audit__e
-    ORDER BY CreatedDate DESC LIMIT 5];
-for (AgentGuard_Audit__e e : events) {
-    System.debug(e.Decision__c + ' | ' + e.GateName__c + ' | ' + e.Reason__c);
-}
+List<Account> accs = [SELECT Id FROM Account LIMIT 1];
+
+// Allowed — matches the schema contract
+TerritoryService.execute(new List<TerritoryService.Request>{
+    new TerritoryService.Request(accs[0].Id, 'West')
+});
+
+// Blocked — an out-of-contract field, the shape a real prompt-injection
+// payload would take. TerritoryService.Request is strongly typed, so this
+// has to go through the facade directly with raw JSON to demonstrate it.
+GuardResult check = AgentGuard.wrap(
+    'UpdateAccountTerritory',
+    '[{"AccountId":"' + accs[0].Id + '","Territory":"West","HACKED__c":"pwn"}]'
+);
+System.debug('BLOCKED: ' + check.reason + ' | gate=' + check.gateName);
 ```
+
+Expect `BLOCKED: Unknown field: HACKED__c | gate=SCHEMA`.
+
+## 5. Watch the audit trail
+
+Platform Events aren't queryable via SOQL, so pick one of these instead of `[SELECT ... FROM AgentGuard_Audit__e]` (that query doesn't compile):
+
+- **Dashboard:** drag the `guardAuditDashboard` Lightning component onto any page — see [Architecture](architecture.md) for how it subscribes.
+- **Terminal:** install the CLI plugin and tail the stream live:
+
+  ```bash
+  sf plugins install @agentguard/sf-agentguard
+  sf agentguard audit tail --target-org agentguard-dev
+  ```
+
+  Full command reference: [plugins/sf-agentguard/README.md](../plugins/sf-agentguard/README.md).
 
 You should see one `ALLOW | FACADE | ALLOWED_BY_POLICY` and one `BLOCK | SCHEMA | Unknown field: HACKED__c`.
 
@@ -117,6 +148,6 @@ You should see one `ALLOW | FACADE | ALLOWED_BY_POLICY` and one `BLOCK | SCHEMA 
 
 ## Next Steps
 
-- Read [Policy Configuration](policy-configuration.md) to customize limits
-- Review [Architecture](architecture.md) to understand the gate chain
-- Check [Threat Model](threat-model.md) for what AgentGuard protects against
+- [Policy Configuration](policy-configuration.md) — customize schema contracts, limits, and scoping
+- [Architecture](architecture.md) — the gate chain, request lifecycle, ADRs
+- [Threat Model](threat-model.md) — what AgentGuard protects against, and what it doesn't
