@@ -86,12 +86,14 @@ export default class GuardAuditDashboard extends LightningElement {
     // Add to recent events feed (newest first)
     const recentEvent = {
       id: Date.now() + '_' + Math.random(), // Unique key for list rendering
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toLocaleTimeString([], { hour12: false }),
       actionName: event.ActionName__c || 'N/A',
       policyName: event.PolicyName__c || 'N/A',
       gateName: event.GateName__c || 'N/A',
       decision: decision || 'UNKNOWN',
       decisionClass: this.getDecisionClass(decision),
+      decisionPillClass: `decision-pill ${this.getDecisionClass(decision)}`,
+      decisionIcon: this.getDecisionIcon(decision),
       reason: event.Reason__c || '',
       flagged: event.Flagged__c === true,
       latencyMs: event.LatencyMs__c || 0,
@@ -123,7 +125,12 @@ export default class GuardAuditDashboard extends LightningElement {
     if (this.error) {
       return 'utility:error';
     }
-    return this.isConnected ? 'utility:success' : 'utility:spinner';
+    return this.isConnected ? 'utility:success' : 'utility:refresh';
+  }
+
+  get statusIconClass() {
+    const isConnecting = !this.error && !this.isConnected;
+    return isConnecting ? 'status-icon is-connecting' : 'status-icon';
   }
 
   getDecisionClass(decision) {
@@ -138,6 +145,21 @@ export default class GuardAuditDashboard extends LightningElement {
         return 'decision-rollback';
       default:
         return '';
+    }
+  }
+
+  getDecisionIcon(decision) {
+    switch (decision) {
+      case 'ALLOW':
+        return 'utility:success';
+      case 'BLOCK':
+        return 'utility:error';
+      case 'THROTTLED':
+        return 'utility:warning';
+      case 'ROLLBACK':
+        return 'utility:undo';
+      default:
+        return 'utility:info';
     }
   }
 }
