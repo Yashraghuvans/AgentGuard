@@ -14,8 +14,8 @@
 
 <div align="center">
 
-<a href="https://youtu.be/fyR49IBWhlo">
-  <img src="https://img.youtube.com/vi/fyR49IBWhlo/maxresdefault.jpg" alt="AgentGuard SF overview video" width="640">
+<a href="https://youtu.be/Q7kJB-wIn-0?si=sHaxzIW2ZJErLUw9">
+  <img src="https://img.youtube.com/vi/Q7kJB-wIn-0/maxresdefault.jpg" alt="AgentGuard SF overview video" width="640">
 </a>
 
 <sub>▶ 1-minute overview — the problem, the five gates, the guarantees</sub>
